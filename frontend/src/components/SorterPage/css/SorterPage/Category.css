@@ -1,0 +1,312 @@
+.category-btn {
+    font-size: 18px;
+    color: #fff;
+    background-color: #4C585B; /* 기본 배경 색 */
+    border: none;
+    padding: 12px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+/* Hover 효과 */
+.category-btn:hover {
+    background-color: #3b4a4d;
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* 아이콘과 텍스트 사이의 간격 */
+.category-btn i {
+    margin-right: 10px;
+}
+
+.category-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #000;
+}
+
+/* 카테고리 이름 스타일 */
+.category-name {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #000000;
+    background-color: transparent;
+    padding: 14px 22px;
+    border-radius: 10px;
+    display: inline-block;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* 호버 시 스타일 */
+.category-name:hover {
+    background-color: #e0e0e0;
+    color: #000000;
+    transform: scale(1.08);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Editing Input Field */
+.category-name input {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    background-color: transparent;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: none;
+    width: auto;
+    min-width: 90px;
+    max-width: 160px;
+    text-align: center;
+    outline: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.category-name input:focus {
+    background-color: #f4f4f4;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+}
+
+/* Category Box Section */
+.box-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.category-box {
+    flex-grow: 1;
+    min-height: 150px;
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.category-btn-box {
+    background-color: #4C585B;
+    color: white;
+    padding: 12px 22px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    height: 130px;
+    transition: all 0.3s ease;
+}
+
+.category-btn-box:hover {
+    background-color: #3b4a4d;
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Category Item */
+.category-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    color: #333;
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    border: 1px solid #d0d0d0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    min-width: 90px;
+    max-width: calc(33.33% - 20px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-grow: 1;
+}
+
+.category-item:hover {
+    background-color: #3b4a4d;
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Editing Input Field */
+.category-item input {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    background-color: transparent;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: none;
+    width: auto;
+    min-width: 90px;
+    max-width: 160px;
+    text-align: center;
+    outline: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.category-item input:focus {
+    background-color: #f4f4f4;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+}
+
+/* Category Name Styles */
+.category-name {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #000;
+    background-color: transparent;
+    padding: 14px 22px;
+    border-radius: 10px;
+    display: inline-block;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Hover Effect for Category Name */
+.category-name:hover {
+    background-color: #e0e0e0;
+    color: #000;
+    transform: scale(1.08);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Editing Input Field for Category Name */
+.category-name input {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    background-color: transparent;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: none;
+    width: auto;
+    min-width: 90px;
+    max-width: 160px;
+    text-align: center;
+    outline: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.category-name input:focus {
+    background-color: #f4f4f4;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+}
+
+/* Box Section for Category Items */
+.box-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+/* Category Box */
+.category-box {
+    flex-grow: 1;
+    min-height: 150px;
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Category Button Box */
+.category-btn-box {
+    background-color: #4C585B;
+    color: white;
+    padding: 12px 22px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    height: 130px;
+    transition: all 0.3s ease;
+}
+
+/* Hover Effect for Category Button Box */
+.category-btn-box:hover {
+    background-color: #3b4a4d;
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Category Item Styles */
+.category-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    color: #333;
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    border: 1px solid #d0d0d0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    min-width: 90px;
+    max-width: calc(33.33% - 20px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-grow: 1;
+}
+
+/* Hover Effect for Category Items */
+.category-item:hover {
+    background-color: #3b4a4d;
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Editing Input Field for Category Item */
+.category-item input {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    background-color: transparent;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: none;
+    width: auto;
+    min-width: 90px;
+    max-width: 160px;
+    text-align: center;
+    outline: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.category-item input:focus {
+    background-color: #f4f4f4;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+}
