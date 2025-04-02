@@ -85,23 +85,23 @@ export const handleElementNameChangeAction = atom(
 // 요소 더블 클릭으로 편집 모드 시작
 export const handleElementDoubleClickAction = atom(
     null,
-    (get, set, index) => {
-        const cards = get(cardsAtom); // cards 상태 가져오기
+    (get, set, elementId) => {
+        const cards = get(cardsAtom); // 현재 요소 리스트 가져오기
+        const targetElement = cards.find((card) => card.elements_name_id === elementId); // ID로 요소 찾기
 
-        // 인덱스가 범위 내에 있는지 확인
-        if (index < 0 || index >= cards.length) {
-            console.error("Invalid index:", index);
+        if (!targetElement) {
+            console.error("해당 ID의 요소를 찾을 수 없습니다:", elementId);
             return;
         }
 
         // 요소 편집 상태 설정
-        set(editingElementIndexAtom, index); // 편집 중인 요소의 인덱스 설정
+        set(editingElementIndexAtom, elementId); // ID 저장
         set(isEditingElementAtom, true); // 편집 모드 활성화
-
-        set(newElementNameAtom, cards[index]?.elements_name || ''); // 해당 요소의 이름 설정
-        set(currentElementNameAtom, cards[index]?.elements_name || ''); // 현재 요소 이름을 백업
+        set(newElementNameAtom, targetElement.elements_name || ''); // 기존 이름 가져오기
+        set(currentElementNameAtom, targetElement.elements_name || ''); // 현재 이름 백업
     }
 );
+
 
 
 
@@ -167,40 +167,37 @@ export const handleElementNameSaveAction = atom(
     async (get, set) => {
         const newElementName = get(newElementNameAtom);
         const editingElementIndex = get(editingElementIndexAtom);
-        const cards = get(cardsAtom);
-        const currentCategory = get(currentCategoryAtom);
+        const encodedElementName = encodeURIComponent(newElementName);
+        console.log("📌 수정할 요소 ID:", editingElementIndex);
+        console.log("📌 새로운 요소 이름:", newElementName);
 
         if (!newElementName) {
-            console.warn('상품 이름을 입력하세요.');
+            console.warn("🚨 상품 이름을 입력하세요.");
+            return;
+        }
+
+        if (!editingElementIndex && editingElementIndex !== 0) {
+            console.warn("🚨 유효하지 않은 요소 ID!");
             return;
         }
 
         try {
             await axios.put('http://localhost:8080/api/elements/update_element', null, {
                 params: {
-                    category_id: currentCategory,
-                    elements_name: newElementName,
+                    elements_name_id: editingElementIndex,
+                    elements_name: encodedElementName,
                 },
             });
 
-            set(cardsAtom, (prevCards) => {
-                const updatedCards = [...prevCards];
-                updatedCards[editingElementIndex] = {
-                    ...updatedCards[editingElementIndex],
-                    elements_name: newElementName,
-                };
-                return updatedCards;
-            });
+            console.log("✅ 서버 요청 성공!");
 
-            set(currentElementNameAtom, newElementName);
-            set(isEditingElementAtom, false);
-            set(newElementNameAtom, '');
         } catch (error) {
-            console.warn('상품 이름 수정 실패!');
-            console.error(error);
+            console.warn("🚨 상품 이름 수정 실패!");
+            console.error("에러 상세:", error.response?.data || error.message);
         }
     }
 );
+
 
 // 현재 카테고리 설정 액션
 export const setCurrentCategoryAction = atom(

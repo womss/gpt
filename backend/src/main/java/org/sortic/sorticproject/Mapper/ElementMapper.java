@@ -36,9 +36,9 @@ public interface ElementMapper {
     List<Element> getElementsByCategoryId(int category_id);
 
     // 상품 수정
-    @Update("UPDATE Elements_name SET elements_name = #{elements_name}, elements_price = #{elements_price}, elements_image = #{elements_image} " +
+    @Update("UPDATE Elements_name SET elements_name = #{elements_name}" +
             "WHERE elements_name_id = #{elements_name_id}")
-    void updateElement(Element element);
+    void updateElement(@Param("elements_name_id") int elements_name_id, @Param("elements_name") String elements_name);
 
     // 상품 삭제
     @Delete("DELETE FROM Elements_name WHERE elements_name_id = #{elements_name_id}")

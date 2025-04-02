@@ -63,8 +63,8 @@ public class CategoryController {
     }
 
     @PutMapping("/update_category_name")
-    public String updateCategoryName(@RequestParam int category_id, @RequestParam String category_name) {
-        categoryService.updateCategoryName(category_id, category_name);
+    public String updateCategoryName(@RequestParam int elements_name_id, @RequestParam String category_name) {
+        categoryService.updateCategoryName(elements_name_id, category_name);
         return "카테고리 이름이 성공적으로 업데이트되었습니다!";
     }
 }
