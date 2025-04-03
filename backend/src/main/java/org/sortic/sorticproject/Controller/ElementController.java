@@ -35,9 +35,10 @@ public class ElementController {
     }
 
     //상품 수정
+
     @PutMapping("/update_element")
-    public String updateElement(@RequestParam int elements_name_id, @RequestParam String elements_name ) {
-        elementService.updateElement(elements_name_id, elements_name);
+    public String updateElement(@RequestBody Element element) {
+        elementService.updateElement(element.getElements_name_id(), element.getElements_name());
         return "상품이 성공적으로 수정되었습니다!";
     }
 

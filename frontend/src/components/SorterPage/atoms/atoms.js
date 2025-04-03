@@ -2,6 +2,8 @@ import { atom } from 'jotai';
 
 // 메시지 API 관련 상태
 
+
+export const messageAtom = atom(null);
 export const messageApiAtom = atom(null);
 export const contextHolderAtom = atom(null);
 
@@ -18,19 +20,20 @@ export const currentCategoryAtom = atom(0);
 export const currentCategoryNameAtom = atom('');
 export const isEditingCategoryAtom = atom(false);
 export const newCategoryNameAtom = atom('');
-
+export const currentIndexAtom = atom(0);
 // 요소 관련 상태
 export const currentElementNameAtom = atom('');
 export const isEditingElementAtom = atom(false);
-
+export const originalElementNameAtom = atom('');
 export const editingElementIndexAtom = atom(null);
 export const elementsDataAtom = atom([{ key_name: "", value_name: "" }]);
-
-// 제품 관련 상태
+export const selectedElementIdAtom = atom (0);
 export const newElementNameAtom = atom('');
-export const newElementCostAtom = atom('');
-export const newElementKeyAtom = atom('');
-export const newElementValueAtom = atom('');
+
+export const addElementNameAtom = atom('');
+export const addElementCostAtom = atom('');
+export const addElementKeyAtom = atom('');
+export const addElementValueAtom = atom('');
 
 // 카드 관련 상태
 export const cardsAtom = atom([]);

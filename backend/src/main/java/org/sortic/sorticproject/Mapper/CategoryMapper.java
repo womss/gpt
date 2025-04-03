@@ -16,7 +16,7 @@ public interface CategoryMapper {
 
     // 카테고리 삭제
     @Delete("DELETE FROM Categories WHERE category_id = #{category_id}")
-    void deleteCategoryById(@Param("category_id") String category_id);
+    void deleteCategoryById(@Param("category_id") int category_id);
 
     // 사용자 ID로 카테고리 목록 조회
     @Select("SELECT category_id, user_id, category_name, created_category_time FROM Categories WHERE user_id = #{user_id}")

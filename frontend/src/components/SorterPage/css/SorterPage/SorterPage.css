@@ -100,3 +100,14 @@ body {
     background-color: #3b4a4d;
     border-color: #3b4a4d;
 }
+.sorter-header .nav-icon {
+    font-size: 30px;
+    color: #333; /* 기본 검정색 */
+    transition: transform 0.2s ease, color 0.2s ease;
+    cursor: pointer;
+}
+
+.sorter-header .nav-icon:hover {
+    transform: scale(2); /* 호버 시 크기 증가 */
+    color: #B7B7B7; /* 파란색 변경 */
+}

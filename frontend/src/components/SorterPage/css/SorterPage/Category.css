@@ -1,3 +1,11 @@
+
+.orbit-regular {
+    font-family: "Orbit", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+
 .category-btn {
     font-size: 18px;
     color: #fff;
@@ -31,6 +39,7 @@
 
 /* 카테고리 이름 스타일 */
 .category-name {
+    font-family: "Orbit", sans-serif;
     font-size: 1.6rem;
     font-weight: bold;
     color: #000000;
@@ -114,7 +123,16 @@
     transform: scale(1.05);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
+.number-section-left{
+    margin-left : -160px;
+    font-size : 13px;
 
+}
+.number-section-right{
+    margin-right : -160px;
+    font-size : 13px;
+
+}
 /* Category Item */
 .category-item {
     display: flex;

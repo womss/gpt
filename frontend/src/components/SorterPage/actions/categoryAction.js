@@ -9,28 +9,68 @@ import {
     isEditingCategoryAtom,
     newCategoryNameAtom,
     addCategoryModalVisibleAtom,
-    cardsAtom
+    cardsAtom,
+    messageAtom,
+    currentIndexAtom
 } from '../atoms/atoms';
 
-import{messageAtom}from'../atoms/messageAtom';
+
 import { fetchElementsByCategoryAction } from './elementAction';
 
 
+export const fetchAndNumberCategoriesAction = atom(
+    null,
+    async (get, set) => {
+        try {
+            const userId = 'user123'; // 실제 사용자 ID로 변경 필요
+            const response = await axios.get('http://localhost:8080/api/categories/get_category', {
+                params: { user_id: userId }
+            });
 
+            const categories = response.data;
+            console.log("반응", categories);
 
-// 카테고리 추가
+            // 각 카테고리에 번호 부여
+            const numberedCategories = categories.map((category, index) => ({
+                ...category,
+                number: index + 1,
+            }));
+
+            set(categoriesAtom, numberedCategories);
+
+            // 첫 번째 카테고리를 자동 선택
+            if (numberedCategories.length > 0) {
+                const firstCategory = numberedCategories[0]; // 첫 번째 카테고리 선택
+                set(currentCategoryAtom, firstCategory.category_id);
+                set(currentCategoryNameAtom, firstCategory.category_name);
+
+                // 첫 번째 카테고리에 해당하는 요소 불러오기
+                await set(fetchElementsByCategoryAction, firstCategory.category_id);
+            }
+
+        } catch (error) {
+            console.error('카테고리 조회 실패:', error);
+            set(messageAtom, { type: 'warning', content: '카테고리 조회 실패' });
+        }
+    }
+);
 export const fetchCategoriesAction = atom(
     null,
     async (get, set, userId) => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/categories`);
+            const response = await axios.get('http://localhost:8080/api/categories/get_category', {
+                params: { user_id: userId }
+            });
             set(categoriesAtom, response.data);
+            return response.data; // ✅ 최신 카테고리 목록 반환 추가
         } catch (error) {
             console.error('카테고리 불러오기 실패', error);
             set(messageAtom, { type: 'warning', content: '카테고리 불러오기 실패' });
+            return []; // 🚨 에러 발생 시 빈 배열 반환 (undefined 방지)
         }
     }
 );
+
 
 export const fetchCategoryByIdAction = atom(
     null,
@@ -121,7 +161,7 @@ export const fetchFirstCategoryAction = atom(
 export const handleCategoryOkAction = atom(
     null,
     async (get, set) => {
-        const newCategory = get(newCategoryAtom); // 새로운 카테고리 이름을 가져옵니다.
+        const newCategory = get(newCategoryAtom);
 
         if (!newCategory) {
             set(messageAtom, { type: 'warning', content: '카테고리 이름을 입력하세요.' });
@@ -134,41 +174,40 @@ export const handleCategoryOkAction = atom(
                 category_name: newCategory,
             });
 
-            // 새 카테고리 정보를 가져와서 상태 갱신
-            const currentCategory = get(currentCategoryAtom);
+            const addedCategory = response.data; // 추가된 카테고리 정보
+            console.log("📌 추가된 카테고리:", addedCategory);
 
-            // `fetchCategoryByIdAction`을 atom으로 사용할 때, 직접적으로 호출하지 않고 `set`을 통해 상태를 갱신
-            set(fetchCategoryByIdAction, currentCategory);
+            // 현재 카테고리를 새로 추가된 카테고리로 변경
+            set(currentCategoryAtom, addedCategory.category_id);
+            set(currentCategoryNameAtom, addedCategory.category_name);
 
-            set(categoriesAtom, (prevCategories) => [
-                ...prevCategories,
-                { category_id: response.data.category_id, category_name: response.data.category_name },
-            ]);
-            set(currentCategoryAtom, response.data.category_id);
-            set(currentCategoryNameAtom, response.data.category_name);
+            // 기존 카테고리 목록에 추가된 카테고리 추가
+            set(categoriesAtom, (prevCategories) => [...prevCategories, addedCategory]);
 
             set(messageAtom, { type: 'success', content: '카테고리가 추가되었습니다!' });
-            set(addCategoryModalVisibleAtom, false); // Modal 닫기
-            set(newCategoryAtom, ''); // 새로운 카테고리 이름 초기화
-            set(cardsAtom, []); // 카드를 초기화
+            message.success("카테고리 추가 성공!");
 
-            // 카테고리에 맞는 요소를 가져옵니다.
-            fetchElementsByCategoryAction(response.data.category_id);
+            // 모달 닫기 및 입력 필드 초기화
+            set(addCategoryModalVisibleAtom, false);
+            set(newCategoryAtom, '');
+
+            // 새 카테고리에 해당하는 요소 불러오기
+            set(fetchElementsByCategoryAction, addedCategory.category_id);
 
         } catch (error) {
+            console.error('카테고리 추가 실패', error);
             set(messageAtom, { type: 'warning', content: '카테고리 추가 실패!' });
-            console.error(error);
         }
     }
 );
 
 
-// 카테고리 삭제
 export const deleteCategoryAction = atom(
     null,
     async (get, set) => {
         const currentCategory = get(currentCategoryAtom);
         const currentCategoryName = get(currentCategoryNameAtom);
+        const categories = get(categoriesAtom);
 
         if (!currentCategory) {
             set(messageAtom, { type: 'warning', content: '삭제할 카테고리를 선택해주세요.' });
@@ -176,37 +215,43 @@ export const deleteCategoryAction = atom(
         }
 
         try {
-            const response = await axios.post('http://localhost:8080/api/categories/delete_category', null, {
-                params: { category_id: currentCategory },
+            await axios.post('http://localhost:8080/api/categories/delete_category', {
+                category_id: currentCategory,
             });
 
-            set(messageAtom, { type: 'success', content: `"${currentCategoryName}"을(를) 성공적으로 삭제했습니다.` });
 
-            set(categoriesAtom, (prevCategories) => prevCategories.filter((category) => category.category_id !== currentCategory));
+            message.success(`"${currentCategoryName}"을(를) 성공적으로 삭제했습니다.`);
+            // 삭제된 카테고리의 인덱스 찾기
+            const indexToDelete = categories.findIndex(cat => cat.category_id === currentCategory);
+            if (indexToDelete === -1) return;
 
-            const maxCategoryId = await fetchMaxCategoryIdAction();
-            const minCategoryId = await fetchMinCategoryIdAction();
+            // 새로운 카테고리 목록 생성 (삭제된 카테고리 제외)
+            const updatedCategories = categories.filter(cat => cat.category_id !== currentCategory)
+                .map((cat, index) => ({ ...cat, number: index + 1 })); // 인덱스 재조정
 
-            if (currentCategory === response.data.category_id) {
-                if (maxCategoryId > minCategoryId) {
-                    set(currentCategoryAtom, minCategoryId);
-                    await fetchCategoryByIdAction(minCategoryId);
-                } else {
-                    set(currentCategoryAtom, 0);
-                    set(currentCategoryNameAtom, '');
-                    set(cardsAtom, []);
-                }
+            set(categoriesAtom, updatedCategories);
+
+            // 새로운 선택된 카테고리 설정 (가능하면 바로 뒤의 카테고리 선택)
+            let newIndex = indexToDelete < updatedCategories.length ? indexToDelete : updatedCategories.length - 1;
+            let newCategory = updatedCategories[newIndex] || null;
+
+            if (newCategory) {
+                set(currentCategoryAtom, newCategory.category_id);
+                set(currentCategoryNameAtom, newCategory.category_name);
+                set(currentIndexAtom, newIndex); // ✅ 인덱스 업데이트
+            } else {
+                set(currentCategoryAtom, null);
+                set(currentCategoryNameAtom, '');
+                set(cardsAtom, []);
+                set(currentIndexAtom, -1); // ✅ 선택할 카테고리가 없으면 -1 설정
             }
-
-            set(currentCategoryNameAtom, '');
-            set(cardsAtom, []);
-
         } catch (error) {
             set(messageAtom, { type: 'warning', content: '카테고리 삭제 실패!' });
             console.error(error);
         }
     }
 );
+
 
 // 카테고리 이름 변경
 export const handleCategoryNameSaveAction = atom(
@@ -221,16 +266,19 @@ export const handleCategoryNameSaveAction = atom(
         }
 
         try {
-            await axios.put(`http://localhost:8080/api/categories/update_category_name`, null, {
-                params: {
-                    category_id: currentCategory,
-                    category_name: newCategoryName,
-                },
-            });
+            await axios.put(
+                `http://localhost:8080/api/categories/update_category_name`,
+                { category_id: currentCategory, category_name: newCategoryName }, // ✅ data로 전달
+                {
+                    headers: { 'Content-Type': 'application/json; charset=UTF-8' } // ✅ UTF-8 명시
+                }
+            );
+
 
             set(messageAtom, { type: 'success', content: '카테고리 이름이 업데이트되었습니다!' });
             set(currentCategoryNameAtom, newCategoryName);
             set(isEditingCategoryAtom, false);
+            message.success("수정이 완료되었습니다!")
         } catch (error) {
             set(messageAtom, { type: 'warning', content: '카테고리 이름 업데이트 실패!' });
             console.error(error);
@@ -251,57 +299,81 @@ export const handleCategoryNameDoubleClickAction = atom(
 // 카테고리 변경 (이전/다음 카테고리)
 export const changeCategoryAction = atom(
     null,
-    async (get, set, direction) => {
-        let currentCategoryId = get(currentCategoryAtom);
-        const maxCategoryId = await fetchMaxCategoryIdAction();
-        const minCategoryId = await fetchMinCategoryIdAction();
+    (get, set, direction) => {
+        const categories = get(categoriesAtom);
+        const currentCategoryId = get(currentCategoryAtom);
 
+        console.log("📌 현재 카테고리 목록:", categories);
+        console.log("🔍 현재 선택된 카테고리 ID:", currentCategoryId);
+
+        if (!categories || categories.length === 0) {
+            console.error("🚨 카테고리 목록이 없습니다.");
+            set(messageAtom, { type: 'warning', content: '카테고리 목록이 없습니다!' });
+            return;
+        }
+
+        if (!currentCategoryId) {
+            console.error("🚨 현재 선택된 카테고리가 없습니다.");
+            set(currentCategoryAtom, categories[0]?.category_id || null);
+            set(currentCategoryNameAtom, categories[0]?.category_name || "이름 없음");
+            return;
+        }
+
+        // 현재 카테고리의 인덱스 찾기
+        const currentIndex = categories.findIndex(cat => cat.category_id === currentCategoryId);
+
+        if (currentIndex === -1) {
+            console.error("🚨 현재 선택된 카테고리를 찾을 수 없습니다. 기본값(0)으로 설정합니다.");
+            set(currentCategoryAtom, categories[0]?.category_id || null);
+            set(currentCategoryNameAtom, categories[0]?.category_name || "이름 없음");
+            return;
+        }
+
+        console.log("🔍 현재 카테고리 인덱스:", currentIndex);
+
+        if (direction !== 'next' && direction !== 'prev') {
+            console.error("🚨 잘못된 direction 값:", direction);
+            return;
+        }
+
+        let newIndex;
         if (direction === 'next') {
-            if (currentCategoryId >= maxCategoryId) {
+            if (currentIndex >= categories.length - 1) {
+                console.warn("🚨 마지막 카테고리입니다!");
                 set(messageAtom, { type: 'warning', content: '마지막 카테고리입니다!' });
                 return;
             }
-            currentCategoryId += 1;
+            newIndex = currentIndex + 1;
         } else if (direction === 'prev') {
-            if (currentCategoryId <= minCategoryId) {
+            if (currentIndex <= 0) {
+                console.warn("🚨 첫 번째 카테고리입니다!");
                 set(messageAtom, { type: 'warning', content: '첫 번째 카테고리입니다!' });
                 return;
             }
-            currentCategoryId -= 1;
+            newIndex = currentIndex - 1;
         }
 
-        set(currentCategoryAtom, currentCategoryId);
-        await fetchCategoryByIdAction(currentCategoryId, set);
+        console.log("➡️ 새로운 인덱스:", newIndex);
+        if (newIndex === undefined || newIndex < 0 || newIndex >= categories.length) {
+            console.error("🚨 유효하지 않은 카테고리 이동 시도! 기본값(0) 설정");
+            newIndex = 0;
+        }
+
+        const newCategory = categories[newIndex];
+        console.log("✅ 변경된 카테고리:", newCategory);
+
+        if (!newCategory) {
+            console.error("🚨 새로운 카테고리가 존재하지 않습니다!");
+            return;
+        }
+        set(currentIndexAtom, newIndex);
+        set(currentCategoryAtom, newCategory.category_id);
+        set(currentCategoryNameAtom, newCategory.category_name);
     }
 );
 
-// 카테고리 최대 ID 조회 액션
-export const fetchMaxCategoryIdAction = atom(
-    null,
-    async (get, set) => {
-        try {
-            const response = await axios.get(`http://localhost:8080/api/categories/max_category_id`);
-            return response.data;
-        } catch (error) {
-            console.error('최대 카테고리 ID 조회 실패:', error);
-            set(messageAtom, { type: 'warning', content: '최대 카테고리 ID 조회 실패' });
-        }
-    }
-);
 
-// 카테고리 최소 ID 조회 액션
-export const fetchMinCategoryIdAction = atom(
-    null,
-    async (get, set) => {
-        try {
-            const response = await axios.get(`http://localhost:8080/api/categories/min_category_id`);
-            return response.data;
-        } catch (error) {
-            console.error('최소 카테고리 ID 조회 실패:', error);
-            set(messageAtom, { type: 'warning', content: '최소 카테고리 ID 조회 실패' });
-        }
-    }
-);
+
 
 
 

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { atom } from 'jotai';
+import { message } from 'antd';
 
-import { messageAtom } from '../atoms/messageAtom';
 import {
     messageApiAtom,
     contextHolderAtom,
@@ -17,11 +17,12 @@ import {
     currentElementNameAtom,
     isEditingElementAtom,
     editingElementIndexAtom,
-    elementsDataAtom,
     newElementNameAtom,
-    newElementCostAtom,
-    newElementKeyAtom,
-    newElementValueAtom,
+    elementsDataAtom,
+    addElementNameAtom,
+    addElementCostAtom,
+    addElementKeyAtom,
+    addElementValueAtom,
     cardsAtom,
     updatedSortersAtom,
     sorterNameAtom,
@@ -32,7 +33,11 @@ import {
     containerRefAtom,
     isDraggingAtom,
     startXAtom,
-    scrollLeftAtom
+    scrollLeftAtom,
+    originalElementNameAtom,
+    selectedElementIdAtom,
+    messageAtom
+
 } from '../atoms/atoms';
 
 // Elements 가져오기
@@ -56,27 +61,89 @@ export const fetchElementsByCategoryAction = atom(
         }
     }
 );
+export const setSelectedElementAction = atom(
+    null,
+    (get, set, elementId) => {
+        console.log("🖱️ 선택된 요소 ID:", elementId);
+        set(selectedElementIdAtom, elementId);
+    }
+);
+
 
 export const addElementAction = atom(
     null,
-    (get, set) => {
-        const currentCategory = get(currentCategoryAtom); // 현재 선택된 카테고리 가져오기
-
+    async (get, set) => {
+        const currentCategory = get(currentCategoryAtom);
         if (!currentCategory) {
             set(messageAtom, { type: 'warning', content: '카테고리를 먼저 추가하세요.' });
             return;
         }
 
-        // 요소 추가 모달 열기
-        set(addElementModalVisibleAtom, true);
+        // ✅ 추가할 요소의 기본 정보 설정
+        const newElement = {
+            category_id: currentCategory,
+            elements_name: get(addElementNameAtom),
+            elements_price: get(addElementCostAtom),
+            elements_image: "default_image_url"
+        };
+
+        try {
+            // ✅ 서버에 요소 추가 요청
+            const response = await axios.post('http://localhost:8080/api/elements/add_element', newElement);
+            if (response.status === 200) {
+                console.log("✅ 요소 추가 성공!", response.data);
+
+                // ✅ 최신 요소 목록 다시 가져오기 (useSetAtom(fetchElementsByCategoryAction)으로 실행해야 함)
+                set(fetchElementsByCategoryAction, currentCategory);
+
+                set(addElementModalVisibleAtom, false);
+                set(messageAtom, { type: 'success', content: '요소가 추가되었습니다.' });
+            }
+        } catch (error) {
+            set(messageAtom, { type: 'error', content: '요소 추가 실패!' });
+            console.error("🚨 요소 추가 오류:", error);
+        }
     }
 );
 
+
+
+export const handleDeleteElementAction = atom(
+    null,
+    async (get, set) => {
+        const selectedElementId = get(selectedElementIdAtom);
+        const cards = get(cardsAtom);
+
+        if (!selectedElementId) {
+            message.warning("삭제할 요소가 선택되지 않았습니다!");
+            console.warn("🚨 삭제할 요소가 선택되지 않았습니다!");
+            return;
+        }
+
+        try {
+            await axios.delete(`http://localhost:8080/api/elements/delete_element`, {
+                params: { elements_name_id: selectedElementId }
+            });
+
+
+
+            // 상태 업데이트 (삭제된 요소 제외)
+            const updatedCards = cards.filter(card => card.elements_name_id !== selectedElementId);
+            set(cardsAtom, updatedCards);
+            set(selectedElementIdAtom, null); // 선택 상태 초기화
+            message.success("요소 삭제 성공!");
+
+        } catch (error) {
+            console.warn("🚨 요소 삭제 실패!");
+            console.error("에러 상세:", error.response?.data || error.message);
+        }
+    }
+);
 // 요소 이름 변경 핸들러
 export const handleElementNameChangeAction = atom(
     (get) => get(newElementNameAtom),
     (get, set, e) => {
-        set(newElementNameAtom, e.target.value);
+
     }
 );
 
@@ -93,11 +160,12 @@ export const handleElementDoubleClickAction = atom(
             console.error("해당 ID의 요소를 찾을 수 없습니다:", elementId);
             return;
         }
-
+        set(originalElementNameAtom, targetElement.elements_name || '');
         // 요소 편집 상태 설정
         set(editingElementIndexAtom, elementId); // ID 저장
         set(isEditingElementAtom, true); // 편집 모드 활성화
         set(newElementNameAtom, targetElement.elements_name || ''); // 기존 이름 가져오기
+
         set(currentElementNameAtom, targetElement.elements_name || ''); // 현재 이름 백업
     }
 );
@@ -123,7 +191,7 @@ export const handleElementOkAction = atom(
     null,
     async (get, set) => {
         const newElementName = get(newElementNameAtom);
-        const newElementCost = get(newElementCostAtom);
+        const newElementCost = get(addElementCostAtom);
         const cards = get(cardsAtom);
         const currentCategory = get(currentCategoryAtom);
         const card_image = "default_image_url"; // 이미지 URL 하드코딩 (필요시 수정)
@@ -153,7 +221,7 @@ export const handleElementOkAction = atom(
             set(cardsAtom, [...cards, newElement]);
             set(addElementModalVisibleAtom, false);
             set(newElementNameAtom, '');
-            set(newElementCostAtom, '');
+
         } catch (error) {
             warning('상품 추가 실패!', set);
             console.error(error);
@@ -161,15 +229,12 @@ export const handleElementOkAction = atom(
     }
 );
 
-// 요소 이름 저장 액션
 export const handleElementNameSaveAction = atom(
     null,
     async (get, set) => {
         const newElementName = get(newElementNameAtom);
         const editingElementIndex = get(editingElementIndexAtom);
-        const encodedElementName = encodeURIComponent(newElementName);
-        console.log("📌 수정할 요소 ID:", editingElementIndex);
-        console.log("📌 새로운 요소 이름:", newElementName);
+        const cards = get(cardsAtom);
 
         if (!newElementName) {
             console.warn("🚨 상품 이름을 입력하세요.");
@@ -182,14 +247,27 @@ export const handleElementNameSaveAction = atom(
         }
 
         try {
-            await axios.put('http://localhost:8080/api/elements/update_element', null, {
-                params: {
-                    elements_name_id: editingElementIndex,
-                    elements_name: encodedElementName,
-                },
+            await axios.put('http://localhost:8080/api/elements/update_element', {
+                elements_name_id: editingElementIndex,
+                elements_name: newElementName  // ✅ 한글 그대로 전송
+            }, {
+                headers: { 'Content-Type': 'application/json; charset=UTF-8' }  // ✅ UTF-8 명시
             });
 
+
             console.log("✅ 서버 요청 성공!");
+
+            // 수정된 요소를 반영한 새로운 카드 리스트 생성
+            const updatedCards = cards.map(card =>
+                card.elements_name_id === editingElementIndex
+                    ? { ...card, elements_name: newElementName }  // 이름 변경 적용
+                    : card
+            );
+
+            // 상태 업데이트
+            set(cardsAtom, updatedCards);
+            set(isEditingElementAtom, false);
+            set(editingElementIndexAtom, null);
 
         } catch (error) {
             console.warn("🚨 상품 이름 수정 실패!");
@@ -197,6 +275,7 @@ export const handleElementNameSaveAction = atom(
         }
     }
 );
+
 
 
 // 현재 카테고리 설정 액션

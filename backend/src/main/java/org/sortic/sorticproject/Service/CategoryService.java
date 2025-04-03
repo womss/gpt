@@ -25,7 +25,7 @@ public class CategoryService {
     }
 
     // 카테고리 삭제
-    public void deleteCategoryById(String category_id) {
+    public void deleteCategoryById(int category_id) {
         categoryMapper.deleteCategoryById(category_id);
     }
 
@@ -37,16 +37,6 @@ public class CategoryService {
     // 사용자 ID와 카테고리 ID로 카테고리 조회
     public Category getCategoryById(String user_id, int category_id) {
         return categoryMapper.getCategoryById(user_id, category_id);
-    }
-
-    // 최대 category_id 조회
-    public Integer getMaxCategoryId() {
-        return categoryMapper.getMaxCategoryId();
-    }
-
-    // 최소 category_id 조회
-    public Integer getMinCategoryId() {
-        return categoryMapper.getMinCategoryId();
     }
 
     // 카테고리 이름 수정

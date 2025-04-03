@@ -2,6 +2,7 @@ package org.sortic.sorticproject.Controller;
 
 
 import org.sortic.sorticproject.Entity.Category;
+import org.sortic.sorticproject.Entity.Element;
 import org.sortic.sorticproject.Service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,10 +23,11 @@ public class CategoryController {
     }
 
     @PostMapping("/delete_category")
-    public String deleteCategory(@RequestParam String category_id) {
-        categoryService.deleteCategoryById(category_id);
+    public String deleteCategory(@RequestBody Category category) {
+        categoryService.deleteCategoryById(category.getCategory_id());
         return "카테고리가 성공적으로 삭제되었습니다!";
     }
+
 
     // GET 방식으로 user_id로 카테고리 목록 조회
     @GetMapping("/get_category")
@@ -50,21 +52,11 @@ public class CategoryController {
 
     }
 
-    // 최대 category_id 조회
-    @GetMapping("/max_category_id")
-    public Integer getMaxCategoryId() {
-        return categoryService.getMaxCategoryId();
-    }
 
-    // 최소 category_id 조회
-    @GetMapping("/min_category_id")
-    public Integer getMinCategoryId() {
-        return categoryService.getMinCategoryId();
-    }
 
     @PutMapping("/update_category_name")
-    public String updateCategoryName(@RequestParam int elements_name_id, @RequestParam String category_name) {
-        categoryService.updateCategoryName(elements_name_id, category_name);
+    public String updateCategoryName(@RequestBody Category category) {
+        categoryService.updateCategoryName(category.getCategory_id(),category.getCategory_name());
         return "카테고리 이름이 성공적으로 업데이트되었습니다!";
     }
 }
