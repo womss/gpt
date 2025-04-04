@@ -43,6 +43,16 @@ public interface ElementMapper {
     // 상품 삭제
     @Delete("DELETE FROM Elements_name WHERE elements_name_id = #{elements_name_id}")
     void deleteElement(int elements_name_id);
+    // 다중 요소 삭제용 메서드 추가
+    @Delete({
+            "<script>",
+            "DELETE FROM Elements_name WHERE elements_name_id IN",
+            "<foreach item='id' collection='ids' open='(' separator=',' close=')'>",
+            "#{id}",
+            "</foreach>",
+            "</script>"
+    })
+    void deleteElementsByIds(@Param("ids") List<Integer> ids);
 
 
 }

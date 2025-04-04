@@ -36,8 +36,8 @@ import {
     scrollLeftAtom,
     originalElementNameAtom,
     selectedElementIdAtom,
-    messageAtom
-
+    messageAtom, attributeModalVisibleAtom,
+     selectedElementIdsAtom
 } from '../atoms/atoms';
 
 // Elements 가져오기
@@ -69,6 +69,53 @@ export const setSelectedElementAction = atom(
     }
 );
 
+export const toggleSelectElementAction = atom(
+    null,
+    (get, set, elementId) => {
+        const selected = get(selectedElementIdsAtom);
+        if (selected.includes(elementId)) {
+            // 이미 선택된 요소면 제거
+            set(selectedElementIdsAtom, selected.filter(id => id !== elementId));
+        } else {
+            // 선택되지 않은 요소면 추가
+            set(selectedElementIdsAtom, [...selected, elementId]);
+        }
+    }
+);
+
+export const handleBulkDeleteElementsAction = atom(
+    null,
+    async (get, set) => {
+        const selectedIds = get(selectedElementIdsAtom);
+        const cards = get(cardsAtom);
+
+        if (selectedIds.length === 0) {
+            message.warning("삭제할 요소가 선택되지 않았습니다!");
+            return;
+        }
+
+        console.log("🚀 삭제 요청 보냄:", selectedIds);
+
+        try {
+            const response = await axios.delete(`http://localhost:8080/api/elements/delete_multiple_elements`, {
+                data: { elements_name_ids: selectedIds },
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            console.log("✅ 삭제 응답:", response);
+
+            // 상태 업데이트
+            const updatedCards = cards.filter(card => !selectedIds.includes(card.elements_name_id));
+            set(cardsAtom, updatedCards);
+            set(selectedElementIdsAtom, []);
+            message.success("요소들이 삭제되었습니다!");
+        } catch (error) {
+            console.error("🚨 일괄 삭제 실패:", error.response?.data || error.message);
+            message.error("요소 삭제에 실패했습니다.");
+        }
+    }
+);
+
 
 export const addElementAction = atom(
     null,
@@ -97,6 +144,7 @@ export const addElementAction = atom(
                 set(fetchElementsByCategoryAction, currentCategory);
 
                 set(addElementModalVisibleAtom, false);
+                set(attributeModalVisibleAtom, true);
                 set(messageAtom, { type: 'success', content: '요소가 추가되었습니다.' });
             }
         } catch (error) {
