@@ -2,8 +2,10 @@
 import React from 'react';
 import { Layout, Menu, Badge, Avatar } from 'antd';
 import { BellOutlined, UserOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 import { useAtom } from 'jotai';
-import { userAtom } from '../../store/userAtom';
+import { userAtom } from '../SorterPage/atoms/atoms';
+import styles from './Header.module.css';
 
 const { Header } = Layout;
 
@@ -11,21 +13,21 @@ const SorticHeader = () => {
     const [user] = useAtom(userAtom);
 
     return (
-        <Header style={{ display: 'flex', alignItems: 'center' }}>
-            <div style={{ color: 'white', fontWeight: 'bold', fontSize: 24 }}>Sortic</div>
-            <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['Home']} style={{ flex: 1, justifyContent: 'center' }}>
-                <Menu.Item key="Home">Home</Menu.Item>
-                <Menu.Item key="Sorter">Sorter</Menu.Item>
-                <Menu.Item key="Cart">Cart</Menu.Item>
-                <Menu.Item key="Q&A">Q&A</Menu.Item>
-                <Menu.Item key="Community">Community</Menu.Item> {/* 추천 탭 추가 */}
-            </Menu>
-            <div style={{ color: 'white' }}>
+        <Header className={styles['header-container']}>
+            <div className={styles.logo}>Sortic</div>
+            <div className={styles['menu-container']}>
+                <div className={styles['menu-item']}><Link to="/">Home</Link></div>
+                <div className={styles['menu-item']}><Link to="/sorter">Sorter</Link></div>
+                <div className={styles['menu-item']}>Cart</div>
+                <div className={styles['menu-item']}>Q&A</div>
+                <div className={styles['menu-item']}>Community</div>
+            </div>
+            <div className={styles['right-section']}>
                 <Badge dot>
-                    <BellOutlined style={{ fontSize: '20px', marginRight: 20 }} />
+                    <BellOutlined className={styles['notification-icon']} />
                 </Badge>
-                <Avatar icon={<UserOutlined />} />
-                <span style={{ marginLeft: 8 }}>{user.nickname || 'Guest'}</span>
+                <Avatar icon={<UserOutlined />} className={styles.avatar} />
+                <span className={styles.username}>{user.nickname || 'Guest'}</span>
             </div>
         </Header>
     );

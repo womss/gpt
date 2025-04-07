@@ -1,0 +1,64 @@
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    height: 64px;
+    background-color: #E5E5EC; /* Ant Design 기본 Header 색상 */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+}
+
+.menu-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+}
+
+.menu-item {
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.menu-item:hover {
+    color: #000000;
+}
+
+.right-section {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.notification-icon {
+    font-size: 20px;
+    color: white;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.notification-icon:hover {
+    color: #000000;
+}
+
+.avatar {
+    cursor: pointer;
+}
+
+.username {
+    color: white;
+    margin-left: 8px;
+    font-size: 14px;
+}
