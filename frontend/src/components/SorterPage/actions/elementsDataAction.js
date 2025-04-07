@@ -5,6 +5,8 @@ import {
     addedElementIdAtom,
     messageAtom,
     attributeModalVisibleAtom,
+    elementDetailModalAtom,
+    elementDetailDataAtom, elementAttributesAtom
 } from '../atoms/atoms';
 
 export const elementsDataAction = atom(
@@ -34,12 +36,17 @@ export const elementsDataAction = atom(
             return;
         }
 
-        // 전송할 데이터 포맷
-        const requestData = filteredPairs.map(pair => ({
+        // ✅ 속성 개수 제한
+        if (filteredPairs.length > 10) {
+            set(messageAtom, { type: 'warning', content: '속성은 최대 10개까지 등록할 수 있습니다!' });
+            return;
+        }
+
+        // ✅ 서버에 보낼 데이터 형식 맞추기
+        const requestData = {
             elements_name_id: elementId,
-            key_name: pair.key,
-            value_name: pair.value,
-        }));
+            data: filteredPairs.map(pair => ({ [pair.key]: pair.value }))
+        };
 
         try {
             const response = await axios.post(
@@ -60,6 +67,28 @@ export const elementsDataAction = atom(
         } catch (error) {
             console.error('🚨 속성 추가 실패:', error.response?.data || error.message);
             set(messageAtom, { type: 'error', content: '속성 추가에 실패했습니다.' });
+            set(keyValuePairsAtom, []);
         }
     }
 );
+
+export const openElementDetailAction = atom(null, async (get, set, data) => {
+    set(elementDetailDataAtom, data);
+    set(elementDetailModalAtom, true);
+
+    try {
+        const response = await axios.get(`http://localhost:8080/api/elements_data/get_elements_data`, {
+            params: { elements_name_id: data.elements_name_id }
+        });
+        set(elementAttributesAtom, response.data);
+        console.log("키벨류" + elementAttributesAtom, response.data);
+    } catch (error) {
+        console.error('🚨 데이터 조회 실패:', error);
+        set(elementAttributesAtom, []);
+    }
+});
+
+
+export const closeElementDetailAction = atom(null, (get, set) => {
+    set(elementDetailModalAtom, false);
+});
