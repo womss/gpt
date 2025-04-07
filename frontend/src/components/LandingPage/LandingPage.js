@@ -11,7 +11,7 @@ const LandingPage = () => (
         <div className={styles.left}>
             <Title>Sortic에 오신 것을 환영합니다!</Title>
             <Text type="secondary" style={{ fontSize: 16 }}>
-                로그인 후 더욱 다양한 서비스를 만나보세요.
+                로그인 후 더욱 다양한 서비스를 만나보세요!
             </Text>
             <div className={styles.buttons}>
                 <Button type="primary">로그인</Button>
