@@ -12,7 +12,7 @@ export const addCategoryModalVisibleAtom = atom(false);
 export const addElementModalVisibleAtom = atom(false);
 export const attributeModalVisibleAtom = atom(false);
 export const sorterModalVisibleAtom = atom(false);
-
+export const elementDetailModalAtom = atom(false);
 // 카테고리 관련 상태
 export const newCategoryAtom = atom('');
 export const categoriesAtom = atom([]);
@@ -35,8 +35,19 @@ export const addElementCostAtom = atom('');
 export const addElementKeyAtom = atom('');
 export const addElementValueAtom = atom('');
 export const keyValuePairsAtom = atom([]);
-
+export const elementAttributesAtom = atom([])
 export const addedElementIdAtom = atom(null);
+export const contextMenuAtom = atom({
+    visible: false,
+    x: 0,
+    y: 0,
+    targetId: null,
+});
+
+export const elementDetailDataAtom = atom(null);
+export const isEditingAtom = atom(false);
+
+
 // 카드 관련 상태
 export const cardsAtom = atom([]);
 
@@ -56,3 +67,4 @@ export const scrollLeftAtom = atom(0);
 
 export const animationClassAtom = atom('');
 export const fadeInOutAtom = atom(false);
+

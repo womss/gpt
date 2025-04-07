@@ -1,12 +1,17 @@
 import React, { useEffect } from 'react';
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom} from 'jotai';
 import { Input, Modal, message , Button} from 'antd';
-import { LeftOutlined, RightOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import {  DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import { ArrowLeftLine, ArrowRightLine, Plus, Minus } from '@rsuite/icons';
+import ContextMenu from "./contextMenu"
+import ElementDetailModal from "./ElementDetailModal"
+
 import "../css/SorterPage/Sorter.css";
 import "../css/SorterPage/Card.css";
 import "../css/SorterPage/SorterPage.css";
 import "../css/SorterPage/Category.css";
 import "../css/SorterPage/Element.css";
+import "../css/SorterPage/ContextMenu.css"
 import 'font-awesome/css/font-awesome.min.css';
 import { Trash } from 'lucide-react';
 import {
@@ -65,8 +70,10 @@ import {
     handleElementOkAction,
     handleElementNameSaveAction,
     setCurrentCategoryAction, setSelectedElementAction,
+    openContextMenuAction
 
 } from '../actions/elementAction';
+
 import {elementsDataAction} from "../actions/elementsDataAction";
 import { toggleSelectElementAction, handleBulkDeleteElementsAction } from '../actions/elementAction';
 const SorterPage = () => {
@@ -95,6 +102,7 @@ const SorterPage = () => {
     const [, setHandleElenmentDoubleClick] = useAtom(handleElementDoubleClickAction);
     const[, setSetSelectedElementAction] = useAtom(setSelectedElementAction);
     const [selectedElementId, setSelectedElementId] = useAtom(selectedElementIdAtom);
+    const [, openContextMenu] = useAtom(openContextMenuAction);
 
     const[, setAddElement] = useAtom(addElementAction);
     const [addElementName, setAddElementName] = useAtom(addElementNameAtom);
@@ -112,7 +120,17 @@ const SorterPage = () => {
     const [, addElementData] = useAtom(elementsDataAction);
     const [addedElementId, setAddedElementId] = useAtom(addedElementIdAtom);
 
+
+
+
+
+
+
+
+
+
     const [selectedElementIds] = useAtom(selectedElementIdsAtom);
+
     const [, setToggleSelectElementAction] = useAtom(toggleSelectElementAction);
     const [, handleBulkDeleteElements] = useAtom(handleBulkDeleteElementsAction);
     const [animationClass, setAnimationClass] = useAtom(animationClassAtom);
@@ -163,11 +181,8 @@ const SorterPage = () => {
 
                 return;
             }
-
-            // ✅ 최신 카테고리로 변경
             setCurrentCategory(newCategory.category_id);
 
-            // ✅ 해당 카테고리의 요소 즉시 불러오기
             await fetchElementsByCategory(newCategory.category_id);
 
         } catch (error) {
@@ -283,8 +298,11 @@ const SorterPage = () => {
         setKeyValuePairs(updatedPairs);
     };
 
-    // 속성 추가 핸들러
     const addKeyValuePair = () => {
+        if (keyValuePairs.length >= 10) {
+            message.warning("최대 10개의 속성만 추가할 수 있습니다.");
+            return;
+        }
         setKeyValuePairs([...keyValuePairs, { key: '', value: '' }]);
     };
 
@@ -297,6 +315,8 @@ const SorterPage = () => {
     const handleRegister = async () => {
         try {
             await addElementData();
+
+
         } catch (error) {
             console.error("📌 서버 응답 데이터:", error.response?.data || error.message);
         } finally {
@@ -306,15 +326,18 @@ const SorterPage = () => {
         }
     };
 
+////////////////////////////////////////////////////////////////////////////////
+
+
 
 
     return (
 
         <div className="sorter-section">
             <div className='sorter-header'>
-                <LeftOutlined
+                <ArrowLeftLine
                     onClick={() => handleCategoryChange('prev')}
-                    style={{ fontSize: '30px' }}
+                    style={{ fontSize: '50px' }}
                     className="nav-icon"
                 />
                 <div className="number-section-left">
@@ -348,9 +371,9 @@ const SorterPage = () => {
                     <h1>{ currentCategoryIndex + 2}</h1>
                 </div>
 
-                <RightOutlined
+                <ArrowRightLine
                     onClick={() => handleCategoryChange('next')}
-                    style={{ fontSize: '30px' }}
+                    style={{ fontSize: '50px' }}
                     className="nav-icon"
                 />
 
@@ -358,20 +381,33 @@ const SorterPage = () => {
             </div>
             <div className={`box-section-${fadeInOut}`}>
 
-            <div className="box-section">
+                <div className="box-section">
                     {cards.map((card, index) => (
                         <div
                             className={`category-item ${selectedElementIds.includes(card.elements_name_id) ? 'selected' : ''}`}
 
                             key={card.elements_name_id || `card-${index}`}
+                            onContextMenu={(e) => {
+                                e.preventDefault();
+                                openContextMenu({
+                                    x: e.clientX,
+                                    y: e.clientY,
+                                    target : card,
+                                    elementId: card.elements_name_id,
+                                });
 
+                                setSelectedElementId(card.elements_name_id);
+                                setSetSelectedElementAction(card.elements_name_id);
+                            }}
                             onDoubleClick={() => handleDoubleClickElementName(card.elements_name_id)}
                             onClick={() => setToggleSelectElementAction(card.elements_name_id)}
+
                         >
                             {isEditingElement && editingElementIndex === card.elements_name_id ? (
                                 <input
                                     value={newElementName}
                                     onChange={handleElementNameChange}
+
                                     onBlur={() => handleElementSaveName(card.elements_name_id)}
                                     onKeyDown={(e) => e.key === "Enter" && handleElementSaveName(card.elements_name_id)}
                                     autoFocus
@@ -383,6 +419,7 @@ const SorterPage = () => {
                     ))}
                 </div>
             </div>
+            <ContextMenu />
             <div className = "element-btn-section">
                 <button type="text" className="element-btn" onClick={showAddElmementModal}>+</button>
                 <button
@@ -390,7 +427,7 @@ const SorterPage = () => {
                     className="element-btn-delete"
                     onClick={handleDeleteSelectedElements}
                 >
-                    <Trash size={20} color="black" />
+                    <Trash className = "trash" size={20} />
                 </button>
             </div>
 
@@ -448,7 +485,7 @@ const SorterPage = () => {
                 cancelText="취소"
             >
                 {keyValuePairs.map((pair, index) => (
-                    <div key={index} style={{ display: "flex", marginBottom: 12 }}>
+                    <div className= 'elements-data-section' key={index} style={{ display: "flex", marginBottom: 12 }}>
                         <Input
                             placeholder="속성 입력"
                             value={pair.key}
@@ -473,7 +510,7 @@ const SorterPage = () => {
                     속성 추가
                 </Button>
             </Modal>
-
+              <ElementDetailModal/>
 
 
 
