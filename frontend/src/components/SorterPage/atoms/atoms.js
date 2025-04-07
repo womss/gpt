@@ -56,3 +56,17 @@ export const scrollLeftAtom = atom(0);
 
 export const animationClassAtom = atom('');
 export const fadeInOutAtom = atom(false);
+
+
+
+
+
+
+// atoms.js (Jotai로 로그인 상태 추가)
+// frontend/src/components/SorterPage/atoms/atoms.js
+// 기존 상태들 유지
+export const categoriesAtom = atom([]);
+export const elementsDataAtom = atom([]);
+
+// 로그인 상태 관리
+export const isLoggedInAtom = atom(false);  // 기본값은 로그아웃 상태 (false)
