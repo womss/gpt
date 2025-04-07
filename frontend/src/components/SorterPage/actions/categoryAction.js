@@ -303,9 +303,6 @@ export const changeCategoryAction = atom(
         const categories = get(categoriesAtom);
         const currentCategoryId = get(currentCategoryAtom);
 
-        console.log("📌 현재 카테고리 목록:", categories);
-        console.log("🔍 현재 선택된 카테고리 ID:", currentCategoryId);
-
         if (!categories || categories.length === 0) {
             console.error("🚨 카테고리 목록이 없습니다.");
             set(messageAtom, { type: 'warning', content: '카테고리 목록이 없습니다!' });
@@ -319,53 +316,32 @@ export const changeCategoryAction = atom(
             return;
         }
 
-        // 현재 카테고리의 인덱스 찾기
         const currentIndex = categories.findIndex(cat => cat.category_id === currentCategoryId);
 
         if (currentIndex === -1) {
-            console.error("🚨 현재 선택된 카테고리를 찾을 수 없습니다. 기본값(0)으로 설정합니다.");
+            console.error("🚨 현재 선택된 카테고리를 찾을 수 없습니다.");
             set(currentCategoryAtom, categories[0]?.category_id || null);
             set(currentCategoryNameAtom, categories[0]?.category_name || "이름 없음");
             return;
         }
 
-        console.log("🔍 현재 카테고리 인덱스:", currentIndex);
-
-        if (direction !== 'next' && direction !== 'prev') {
+        let newIndex;
+        if (direction === 'next') {
+            newIndex = (currentIndex + 1) % categories.length; // 마지막 카테고리 → 첫 번째로 이동
+        } else if (direction === 'prev') {
+            newIndex = (currentIndex - 1 + categories.length) % categories.length; // 첫 번째 카테고리 → 마지막으로 이동
+        } else {
             console.error("🚨 잘못된 direction 값:", direction);
             return;
         }
 
-        let newIndex;
-        if (direction === 'next') {
-            if (currentIndex >= categories.length - 1) {
-                console.warn("🚨 마지막 카테고리입니다!");
-                set(messageAtom, { type: 'warning', content: '마지막 카테고리입니다!' });
-                return;
-            }
-            newIndex = currentIndex + 1;
-        } else if (direction === 'prev') {
-            if (currentIndex <= 0) {
-                console.warn("🚨 첫 번째 카테고리입니다!");
-                set(messageAtom, { type: 'warning', content: '첫 번째 카테고리입니다!' });
-                return;
-            }
-            newIndex = currentIndex - 1;
-        }
-
-        console.log("➡️ 새로운 인덱스:", newIndex);
-        if (newIndex === undefined || newIndex < 0 || newIndex >= categories.length) {
-            console.error("🚨 유효하지 않은 카테고리 이동 시도! 기본값(0) 설정");
-            newIndex = 0;
-        }
-
         const newCategory = categories[newIndex];
-        console.log("✅ 변경된 카테고리:", newCategory);
 
         if (!newCategory) {
             console.error("🚨 새로운 카테고리가 존재하지 않습니다!");
             return;
         }
+
         set(currentIndexAtom, newIndex);
         set(currentCategoryAtom, newCategory.category_id);
         set(currentCategoryNameAtom, newCategory.category_name);

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { atom } from 'jotai';
+import { atom, useSetAtom, useAtomValue , useAtom} from 'jotai';
 import { message } from 'antd';
 
 import {
@@ -36,8 +36,9 @@ import {
     scrollLeftAtom,
     originalElementNameAtom,
     selectedElementIdAtom,
-    messageAtom
-
+    messageAtom, attributeModalVisibleAtom,
+    selectedElementIdsAtom, addedElementIdAtom,
+    contextMenuAtom
 } from '../atoms/atoms';
 
 // Elements 가져오기
@@ -69,11 +70,59 @@ export const setSelectedElementAction = atom(
     }
 );
 
+export const toggleSelectElementAction = atom(
+    null,
+    (get, set, elementId) => {
+        const selected = get(selectedElementIdsAtom);
+        if (selected.includes(elementId)) {
+            // 이미 선택된 요소면 제거
+            set(selectedElementIdsAtom, selected.filter(id => id !== elementId));
+        } else {
+            // 선택되지 않은 요소면 추가
+            set(selectedElementIdsAtom, [...selected, elementId]);
+        }
+    }
+);
+
+export const handleBulkDeleteElementsAction = atom(
+    null,
+    async (get, set) => {
+        const selectedIds = get(selectedElementIdsAtom);
+        const cards = get(cardsAtom);
+
+        if (selectedIds.length === 0) {
+            message.warning("삭제할 요소가 선택되지 않았습니다!");
+            return;
+        }
+
+        console.log("🚀 삭제 요청 보냄:", selectedIds);
+
+        try {
+            const response = await axios.delete(`http://localhost:8080/api/elements/delete_multiple_elements`, {
+                data: { elements_name_ids: selectedIds },
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            console.log("✅ 삭제 응답:", response);
+
+            // 상태 업데이트
+            const updatedCards = cards.filter(card => !selectedIds.includes(card.elements_name_id));
+            set(cardsAtom, updatedCards);
+            set(selectedElementIdsAtom, []);
+            message.success("요소들이 삭제되었습니다!");
+        } catch (error) {
+            console.error("🚨 일괄 삭제 실패:", error.response?.data || error.message);
+            message.error("요소 삭제에 실패했습니다.");
+        }
+    }
+);
+
 
 export const addElementAction = atom(
     null,
     async (get, set) => {
         const currentCategory = get(currentCategoryAtom);
+
         if (!currentCategory) {
             set(messageAtom, { type: 'warning', content: '카테고리를 먼저 추가하세요.' });
             return;
@@ -92,11 +141,15 @@ export const addElementAction = atom(
             const response = await axios.post('http://localhost:8080/api/elements/add_element', newElement);
             if (response.status === 200) {
                 console.log("✅ 요소 추가 성공!", response.data);
-
+                const newElementId = response.data.elements_name_id;
                 // ✅ 최신 요소 목록 다시 가져오기 (useSetAtom(fetchElementsByCategoryAction)으로 실행해야 함)
                 set(fetchElementsByCategoryAction, currentCategory);
+                set(addedElementIdAtom, newElementId);
+                set(addElementNameAtom, "");
+                set(addElementCostAtom, "");
 
                 set(addElementModalVisibleAtom, false);
+                set(attributeModalVisibleAtom, true);
                 set(messageAtom, { type: 'success', content: '요소가 추가되었습니다.' });
             }
         } catch (error) {
@@ -254,7 +307,7 @@ export const handleElementNameSaveAction = atom(
                 headers: { 'Content-Type': 'application/json; charset=UTF-8' }  // ✅ UTF-8 명시
             });
 
-
+            message.success("상품 이름 수정 완료!");
             console.log("✅ 서버 요청 성공!");
 
             // 수정된 요소를 반영한 새로운 카드 리스트 생성
@@ -283,5 +336,32 @@ export const setCurrentCategoryAction = atom(
     null,
     (get, set, categoryId) => {
         set(currentCategoryAtom, categoryId);
+    }
+);
+
+
+
+
+export const openContextMenuAction = atom(
+    null,
+    (get, set, { x, y,target }) => {
+        set(contextMenuAtom, {
+            visible: true,
+            x,
+            y,
+            target,
+        });
+    }
+);
+
+export const closeContextMenuAction = atom(
+    null,
+    (get, set) => {
+        set(contextMenuAtom, {
+            visible: false,
+            x: 0,
+            y: 0,
+            targetElementId: null,
+        });
     }
 );

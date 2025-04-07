@@ -36,4 +36,9 @@ public class ElementService {
     public void deleteElement(int elements_name_id) {
         elementMapper.deleteElement(elements_name_id);
     }
+    // 다중 삭제 메서드 추가
+    public void deleteElementsByIds(List<Integer> ids) {
+        elementMapper.deleteElementsByIds(ids);
+    }
+
 }

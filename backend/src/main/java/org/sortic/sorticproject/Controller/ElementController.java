@@ -4,9 +4,11 @@ package org.sortic.sorticproject.Controller;
 import org.sortic.sorticproject.Entity.Element;
 import org.sortic.sorticproject.Service.ElementService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/elements")
@@ -17,9 +19,9 @@ public class ElementController {
 
     // 상품 추가
     @PostMapping("/add_element")
-    public String addElement(@RequestBody Element element) {
+    public Element addElement(@RequestBody Element element) {
         elementService.addElement(element);
-        return "상품이 성공적으로 추가되었습니다!";
+        return element;
     }
 
     // 상품 조회
@@ -48,4 +50,15 @@ public class ElementController {
         elementService.deleteElement(elements_name_id);
         return "상품이 성공적으로 삭제되었습니다!";
     }
+    @DeleteMapping("/delete_multiple_elements")
+    public ResponseEntity<String> deleteMultipleElements(@RequestBody Map<String, List<Integer>> payload) {
+        List<Integer> ids = payload.get("elements_name_ids");
+        if (ids == null || ids.isEmpty()) {
+            return ResponseEntity.badRequest().body("삭제할 ID 목록이 비어 있습니다.");
+        }
+
+        elementService.deleteElementsByIds(ids);
+        return ResponseEntity.ok("요소들이 성공적으로 삭제되었습니다!");
+    }
+
 }
