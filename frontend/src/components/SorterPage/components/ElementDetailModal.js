@@ -1,6 +1,6 @@
 import { useAtom, useSetAtom } from "jotai";
 import { Modal, Divider, Input, Button } from "antd";
-import { SquarePen, X } from "lucide-react";  // 아이콘 변경
+import { SquarePen, X, Plus } from "lucide-react";  // 아이콘 변경
 import { useState } from "react";
 import { RotateCcw } from "lucide-react"
 import {
@@ -8,6 +8,7 @@ import {
     elementDetailDataAtom,
     elementAttributesAtom,
     isEditingAtom,
+    attributeModalVisibleAtom
 } from "../atoms/atoms";
 
 import { closeElementDetailAction } from "../actions/elementsDataAction";
@@ -19,7 +20,7 @@ const ElementDetailModal = () => {
     const [attributes, setAttributes] = useAtom(elementAttributesAtom);
     const [isEditing, setIsEditing] = useAtom(isEditingAtom);
     const closeElementDetail = useSetAtom(closeElementDetailAction);
-
+    const [attributeModalVisible, setAttributeModalVisible] = useAtom(attributeModalVisibleAtom)
     const [editingField, setEditingField] = useState(null);
     const [tempValue, setTempValue] = useState("");
 
@@ -65,14 +66,25 @@ const ElementDetailModal = () => {
             {data ? (
                 <div className="detail-container">
 
+                   <div className="detail-btn-section">
                     {/* 편집 모드 토글 버튼 */}
                     <button
                         onClick={() => setIsEditing(!isEditing)}
                         style={{ background: "none", border: "none", cursor: "pointer" }}
                         className="Element-Detail-Modal-edit-btn"
                     >
-                        {isEditing ? <RotateCcw size={20} color="#f5222d" /> : <SquarePen size={20} />}
+                        {isEditing ? <RotateCcw size={35} color="#f5222d" /> : <SquarePen size={35} />}
                     </button>
+
+                    <button
+                            onClick={() => setAttributeModalVisible(true)}
+                            style={{ background: "none", border: "none", cursor: "pointer" }}
+                            className="Element-Detail-Modal-add-btn"
+                        >
+                            <Plus size={45} />
+                    </button>
+
+                   </div>
 
                     <div className="detail-header-section">
                         <img
@@ -84,13 +96,13 @@ const ElementDetailModal = () => {
                         <div className="detail-header">
                             <div className="detail-top">
                                 {editingField === "name" ? (
-                                    <Input
-                                        style={{ width: "100px" }}
+                                    <input
+
                                         size="small"
                                         value={tempValue}
                                         onChange={(e) => setTempValue(e.target.value)}
                                         onBlur={handleSaveField}
-                                        className = "custom-input"
+                                        className = "custom-input-header-title"
                                         autoFocus
                                     />
                                 ) : (
@@ -109,15 +121,16 @@ const ElementDetailModal = () => {
                             </div>
 
                             {editingField === "price" ? (
-                                <Input
+
+                                <input
                                     size="small"
-                                    style={{ width: "100px" }}
                                     value={tempValue}
                                     onChange={(e) => setTempValue(e.target.value)}
                                     onBlur={handleSaveField}
-                                    className = "custom-input"
+                                    className = "custom-input-header-price"
                                     autoFocus
                                 />
+
                             ) : (
                                 <div
                                     className="detail-price"
@@ -140,14 +153,17 @@ const ElementDetailModal = () => {
                         {attributes.length ? (
                             attributes.map((attr, idx) => (
                                 <div className="detail-attribute" key={idx}>
+
                                     {editingField === `key-${idx}` ? (
-                                        <Input
-                                            size="small"
-                                            style={{ width: "100px" }}
+
+
+                                        <input
+
+
                                             value={tempValue}
                                             onChange={(e) => setTempValue(e.target.value)}
                                             onBlur={handleSaveField}
-                                            className = "custom-input"
+                                            className = "custom-input-key"
                                             autoFocus
                                         />
                                     ) : (
@@ -165,13 +181,13 @@ const ElementDetailModal = () => {
                                     )}
 
                                     {editingField === `value-${idx}` ? (
-                                        <Input
+                                        <input
                                             size="small"
-                                            style={{ width: "100px" }}
+
                                             value={tempValue}
                                             onChange={(e) => setTempValue(e.target.value)}
                                             onBlur={handleSaveField}
-                                            className = "custom-input"
+                                            className = "custom-input-value"
                                             autoFocus
                                         />
                                     ) : (
@@ -211,6 +227,7 @@ const ElementDetailModal = () => {
                 <div className="detail-empty">데이터가 없습니다.</div>
             )}
         </Modal>
+
     );
 };
 

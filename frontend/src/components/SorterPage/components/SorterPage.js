@@ -253,8 +253,9 @@ const SorterPage = () => {
         setNewElementName(e.target.value);
     };
     const selectedElement = (elementId) => {
-        console.log("🔍 선택된 요소 ID:", elementId); // 선택된 ID 확인
+        console.log("🔍 선택된 요소 ID!:", elementId); // 선택된 ID 확인
         setSelectedElementId(elementId);
+        setAddedElementId(elementId);
         setSetSelectedElementAction(elementId);
     };
 
@@ -315,16 +316,15 @@ const SorterPage = () => {
     const handleRegister = async () => {
         try {
             await addElementData();
-
-
+            message.success("요소 추가가 완료되었습니다!");
         } catch (error) {
             console.error("📌 서버 응답 데이터:", error.response?.data || error.message);
+            message.error("요소 추가 실패..😭");
         } finally {
-            // 입력값이 없든 에러가 나든 무조건 닫기
-            message.success("요소 추가가 완료되었습니다!");
             setAttributeModalVisible(false);
         }
     };
+
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -334,6 +334,7 @@ const SorterPage = () => {
     return (
 
         <div className="sorter-section">
+
             <div className='sorter-header'>
                 <ArrowLeftLine
                     onClick={() => handleCategoryChange('prev')}
