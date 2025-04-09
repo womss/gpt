@@ -49,11 +49,13 @@
 
 /* ✅ Carousel dots 다크/라이트 대응 */
 :global(.slick-dots li button) {
-    background: currentColor;
+    background-color: var(--text-color) !important;
+    border: none !important;
     opacity: 0.3;
     border-radius: 50%;
     width: 8px;
     height: 8px;
+    box-shadow: none;
 }
 
 :global(.slick-dots li.slick-active button) {
