@@ -6,14 +6,14 @@ import {
     messageAtom,
     attributeModalVisibleAtom,
     elementDetailModalAtom,
-    elementDetailDataAtom, elementAttributesAtom
+    elementDetailDataAtom, elementAttributesAtom,selectedElementIdAtom
 } from '../atoms/atoms';
 
 export const elementsDataAction = atom(
     null,
     async (get, set) => {
         const keyValuePairs = get(keyValuePairsAtom);
-        const elementId = get(addedElementIdAtom);
+        const elementId = get(selectedElementIdAtom);
 
         // 유효성 검사
         if (!elementId) {
@@ -55,6 +55,7 @@ export const elementsDataAction = atom(
                 {
                     headers: { 'Content-Type': 'application/json; charset=UTF-8' },
                 }
+
             );
 
             if (response.status === 200) {

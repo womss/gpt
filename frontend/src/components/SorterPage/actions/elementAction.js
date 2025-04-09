@@ -66,6 +66,7 @@ export const setSelectedElementAction = atom(
     null,
     (get, set, elementId) => {
         console.log("🖱️ 선택된 요소 ID:", elementId);
+
         set(selectedElementIdAtom, elementId);
     }
 );
@@ -147,7 +148,7 @@ export const addElementAction = atom(
                 set(addedElementIdAtom, newElementId);
                 set(addElementNameAtom, "");
                 set(addElementCostAtom, "");
-
+                set(selectedElementIdAtom, newElementId);
                 set(addElementModalVisibleAtom, false);
                 set(attributeModalVisibleAtom, true);
                 set(messageAtom, { type: 'success', content: '요소가 추가되었습니다.' });
