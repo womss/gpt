@@ -128,13 +128,6 @@ const SorterPage = () => {
 
 
 
-
-
-
-
-
-
-
     const [selectedElementIds] = useAtom(selectedElementIdsAtom);
 
     const [, setToggleSelectElementAction] = useAtom(toggleSelectElementAction);
@@ -142,6 +135,7 @@ const SorterPage = () => {
     const [animationClass, setAnimationClass] = useAtom(animationClassAtom);
     const [fadeInOut, setFadeInOut] = useAtom(fadeInOutAtom);
     const navigate = useNavigate();
+    const { confirm } = Modal;
     useEffect(() => {
         setfetchAndNumberCategories(); // 카테고리를 번호와 함께 불러옴
     }, []);
@@ -241,19 +235,34 @@ const SorterPage = () => {
         }
     };
     // 카테고리 삭제
-    const handleDeleteCategory = async () => {
-        try {
-            await setDeleteCategory();
-            const userId = 'user123';
-            const count = await fetchCategoryCount(userId);
-            console.log("카테고리 개수 : " + count);
-            if (count === 0) {
-                navigate('/sorterDefaultPage');
-            }
-        } catch (error) {
-            console.error('카테고리 삭제 에러:', error);
-            message.error('카테고리 삭제에 실패했습니다.');
-        }
+
+
+    const handleDeleteCategory = () => {
+        confirm({
+            title: `'${currentCategoryName}' 카테고리를 삭제하시겠습니까?`,
+            content: '삭제된 카테고리는 복구할 수 없습니다.',
+            okText: '삭제',
+            okType: 'danger',
+            cancelText: '취소',
+            centered: true,
+            onOk: async () => {
+                try {
+                    await setDeleteCategory();
+                    const userId = 'user123';
+                    const count = await fetchCategoryCount(userId);
+                    console.log("카테고리 개수 : " + count);
+                    if (count === 0) {
+                        navigate('/sorterDefaultPage');
+                    }
+                } catch (error) {
+                    console.error('카테고리 삭제 에러:', error);
+                    message.error('카테고리 삭제에 실패했습니다.');
+                }
+            },
+            onCancel() {
+                console.log('카테고리 삭제 취소됨');
+            },
+        });
     };
 
     // 요소 더블 클릭 -> 편집 모드 활성화
@@ -370,6 +379,7 @@ const SorterPage = () => {
 
     return (
         <div className="sorter-page-section">
+
 
 
             <div className="sorter-section">
@@ -614,8 +624,9 @@ const SorterPage = () => {
 
 
 
+</div>
 
-        </div>
+
 
     );
 };
