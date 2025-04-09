@@ -44,6 +44,12 @@ public class ElementController {
         return "상품이 성공적으로 수정되었습니다!";
     }
 
+    @PutMapping("/update_element_price")
+    public String updateElementPrice(@RequestBody Element element) {
+        elementService.updateElementPrice(element.getElements_name_id(), element.getElements_price());
+        return "상품이 성공적으로 수정되었습니다!";
+    }
+
     // 상품 삭제
     @DeleteMapping("/delete_element")
     public String deleteElement(@RequestParam int elements_name_id) {

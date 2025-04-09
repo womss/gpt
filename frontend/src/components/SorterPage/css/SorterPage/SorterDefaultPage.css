@@ -1,0 +1,99 @@
+.sorter-section-default {
+    margin-top: 40px;
+    padding: 20px;
+    height: 250px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #5e6d71;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    font-family: 'Inter', sans-serif;
+    font-size: 48pt;
+    font-weight: 600;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+    text-align: center;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+
+.sorter-section-default:hover {
+    background-color: #5e6d71;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+
+    color: #e0f7fa;
+    letter-spacing: 1.2px;
+    transform: scale(1.02);
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.25);
+}
+.sorter-guide-section {
+    margin-top: 40px;
+    padding: 30px;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.sorter-guide-section:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+.guide-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #37474f;
+    margin-bottom: 16px;
+    border-left: 5px solid #5e6d71;
+    padding-left: 12px;
+    letter-spacing: 0.5px;
+}
+
+.guide-list {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.guide-list li {
+    margin-bottom: 12px;
+    font-size: 16px;
+    color: #555;
+    line-height: 1.6;
+    position: relative;
+    padding-left: 28px;
+}
+
+.guide-list li::before {
+    content: '✔';
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #5e6d71;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.guide-list code {
+    background-color: #f0f4f5;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 90%;
+    font-weight: 500;
+    color: #37474f;
+    font-family: 'Courier New', monospace;
+}

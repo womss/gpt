@@ -32,7 +32,11 @@ public class CategoryService {
     // 사용자 ID로 카테고리 목록 조회
     public List<Category> getCategoriesByUserId(String user_id) {
         return categoryMapper.getCategoriesByUserId(user_id);
+    }// 사용자 ID로 카테고리 개수 조회
+    public int countCategoriesByUserId(String user_id) {
+        return categoryMapper.countCategoriesByUserId(user_id);
     }
+
 
     // 사용자 ID와 카테고리 ID로 카테고리 조회
     public Category getCategoryById(String user_id, int category_id) {

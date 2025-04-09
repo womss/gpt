@@ -49,4 +49,19 @@ public class ElementsDataController {
         elementsDataService.deleteAllElementsData(elements_name_id);
         return "해당 요소의 모든 데이터가 삭제되었습니다!";
     }
+
+    // Key 이름 수정
+    @PutMapping("/update_key_name")
+    public String updateKeyName(@RequestParam int elements_id, @RequestParam String key_name) {
+        elementsDataService.updateKeyName(elements_id, key_name);
+        return "Key 이름이 성공적으로 수정되었습니다!";
+    }
+
+    // Value 이름 수정
+    @PutMapping("/update_value_name")
+    public String updateValueName(@RequestParam int elements_id, @RequestParam String value_name) {
+        elementsDataService.updateValueName(elements_id, value_name);
+        return "Value 이름이 성공적으로 수정되었습니다!";
+    }
+
 }

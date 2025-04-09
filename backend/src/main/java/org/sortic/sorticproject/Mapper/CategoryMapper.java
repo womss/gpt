@@ -35,4 +35,8 @@ public interface CategoryMapper {
     Integer getMinCategoryId();
     @Update("UPDATE Categories SET category_name = #{category_name} WHERE category_id = #{category_id}")
     void updateCategoryName(@Param("category_id") int category_id, @Param("category_name") String category_name);
+
+    @Select("SELECT COUNT(*) FROM Categories WHERE user_id = #{user_id}")
+    int countCategoriesByUserId(@Param("user_id") String user_id);
+
 }

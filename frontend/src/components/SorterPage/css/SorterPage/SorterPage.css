@@ -65,20 +65,6 @@ body {
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
 
-/* Category Button Styles */
-.category-btn {
-    font-size: 18px;
-    color: #fff;
-    background-color: #4C585B;
-    border: none;
-    padding: 12px 18px;
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    transition: all 0.3s ease;
-}
-
 
 
 /* Modal Styles */
@@ -126,3 +112,25 @@ body {
     transform: scale(2); /* 호버 시 크기 증가 */
     color: #B7B7B7; /* 파란색 변경 */
 }
+
+/* Tooltip 디자인 커스터마이징 */
+.custom-tooltip .ant-tooltip-inner {
+    background-color: #f5fbfc; /* 밝은 민트 그레이 배경 */
+    color: #2c2c2c; /* 진한 중회색 텍스트 */
+    font-size: 14px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-weight: 500;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15); /* 그림자 더 강조 */
+    transition: all 0.3s ease;
+    backdrop-filter: blur(4px); /* 유리 느낌 추가하면 더 고급스러움 */
+}
+
+.custom-tooltip .ant-tooltip-arrow::before {
+    background-color: #f5fbfc;
+}
+
+
+
+
+

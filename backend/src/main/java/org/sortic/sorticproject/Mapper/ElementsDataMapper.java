@@ -24,4 +24,13 @@ public interface ElementsDataMapper {
     // ✅ 전체 삭제
     @Delete("DELETE FROM elements_data WHERE elements_name_id = #{elements_name_id}")
     void deleteAllElementsData(int elements_name_id);
+    // ✅ key_name 수정
+    @Update("UPDATE elements_data SET key_name = #{key_name} WHERE elements_id = #{elements_id}")
+    void updateKeyName(@Param("elements_id") int elements_id, @Param("key_name") String key_name);
+
+    // ✅ value_name 수정
+    @Update("UPDATE elements_data SET value_name = #{value_name} WHERE elements_id = #{elements_id}")
+    void updateValueName(@Param("elements_id") int elements_id, @Param("value_name") String value_name);
+
+
 }

@@ -31,6 +31,10 @@ public class ElementService {
     public void updateElement(int elements_name_id, String elements_name ) {
         elementMapper.updateElement(elements_name_id, elements_name);
     }
+    // 상품 가격 수정
+    public void updateElementPrice(int elements_name_id, int elements_price ) {
+        elementMapper.updateElementPrice(elements_name_id, elements_price);
+    }
 
     // 상품 삭제
     public void deleteElement(int elements_name_id) {
@@ -40,5 +44,6 @@ public class ElementService {
     public void deleteElementsByIds(List<Integer> ids) {
         elementMapper.deleteElementsByIds(ids);
     }
+
 
 }
