@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import SorticHeader from '../components/Header/Header';
 import LandingPage from '../components/LandingPage/LandingPage';
 import SorterPage from '../components/SorterPage/components/SorterPage';
-import SorterPageDefault from '../components/SorterPage/components/SorterPageDefault';
+import SorterDefaultPage from '../components/SorterPage/components/SorterDefaultPage';
 const App = () => {
     return (
         <>
@@ -11,7 +11,7 @@ const App = () => {
             <Routes>
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/sorter" element={<SorterPage />} />
-                <Route path="/SorterPageDefault" element={<SorterPageDefault />} />
+                <Route path="/sorterDefaultPage" element={<SorterDefaultPage />} />
             </Routes>
         </>
     );

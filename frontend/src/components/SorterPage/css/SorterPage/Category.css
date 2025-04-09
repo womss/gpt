@@ -13,9 +13,12 @@
     padding: 12px 18px;
     border-radius: 8px;
     cursor: pointer;
+    justify-content: center;
     display: flex;
     align-items: center;
     transition: all 0.3s ease;
+    width: 200px;
+    height: 40px;
 }
 
 /* Hover 효과 */

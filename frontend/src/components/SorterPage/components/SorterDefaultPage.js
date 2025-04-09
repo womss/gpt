@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useAtom } from 'jotai';
-import "../css/SorterPage/SorterPageDefault.css";
+import "../css/SorterPage/SorterDefaultPage.css";
 import { useNavigate } from 'react-router-dom';
 import { message, Modal, Input } from 'antd';
 
@@ -18,7 +18,7 @@ import {
     fetchElementsByCategoryAction
 } from '../actions/elementAction';
 
-const SorterPageDefault = () => {
+const SorterDefaultPage = () => {
     const [addCategoryModalVisible, setAddCategoryModalVisible] = useAtom(addCategoryModalVisibleAtom);
     const [, setHandleCategoryOk] = useAtom(handleCategoryOkAction);
     const [, setfetchAndNumberCategories] = useAtom(fetchAndNumberCategoriesAction);
@@ -54,7 +54,7 @@ const SorterPageDefault = () => {
             await setFetchElementsByCategory(newCat.category_id);
             await setFetchCategoryById(newCat.category_id);
 
-            message.success("카테고리가 추가되었습니다!");
+
             setAddCategoryModalVisible(false);  // 모달 닫기
             // 입력 초기화
             navigate('/sorter');
@@ -85,8 +85,19 @@ const SorterPageDefault = () => {
                     placeholder="카테고리 이름을 입력하세요"
                 />
             </Modal>
+            <div className="sorter-guide-section">
+                <h2 className="guide-title">💡 SorterPage 사용법</h2>
+                <ul className="guide-list">
+                    <li><strong>카테고리 생성:</strong> 상단의 <strong>Create Category</strong> 버튼을 눌러 새 카테고리를 만드세요.</li>
+                    <li><strong>카테고리 이름 수정:</strong> 카테고리 이름을 더블 클릭해 변경할 수 있어요.</li>
+                    <li><strong>요소 추가:</strong> 하단의 <code>+</code> 버튼을 눌러 상품 이름과 가격을 추가하세요.</li>
+                    <li><strong>속성 입력:</strong> 요소를 우클릭해서 속성(key-value 쌍)을 추가할 수 있어요.</li>
+                    <li><strong>삭제:</strong> 카테고리나 요소를 선택 후 <code>-</code> 혹은 휴지통 아이콘으로 삭제하세요.</li>
+                </ul>
+            </div>
+
         </>
     );
 };
 
-export default SorterPageDefault;
+export default SorterDefaultPage;

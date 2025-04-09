@@ -28,4 +28,12 @@ public class ElementsDataService {
     public void deleteAllElementsData(int elements_name_id) {
         elementsDataMapper.deleteAllElementsData(elements_name_id);
     }
+
+    public void updateKeyName(int elementsId, String keyName) {
+        elementsDataMapper.updateKeyName(elementsId, keyName);
+    }
+
+    public void updateValueName(int elementsId, String valueName) {
+        elementsDataMapper.updateValueName(elementsId, valueName);
+    }
 }
