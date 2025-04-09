@@ -2,19 +2,21 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 20px;
+    padding: 0 var(--spacing-md);
     height: 64px;
-    background-color: #E5E5EC; /* Ant Design 기본 Header 색상 */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: var(--header-bg);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     position: sticky;
     top: 0;
     z-index: 1000;
+    backdrop-filter: blur(12px);
+    font-family: var(--font-family);
 }
 
 .logo {
     font-size: 24px;
-    font-weight: bold;
-    color: white;
+    font-weight: var(--font-weight-bold);
+    color: var(--text-color);
     cursor: pointer;
 }
 
@@ -22,35 +24,35 @@
     flex: 1;
     display: flex;
     justify-content: center;
-    gap: 40px;
+    gap: var(--spacing-lg);
 }
 
 .menu-item {
-    color: white;
-    font-size: 16px;
+    color: var(--text-color);
+    font-size: var(--font-size-md);
     cursor: pointer;
     transition: color 0.3s;
 }
 
 .menu-item:hover {
-    color: #000000;
+    color: var(--hover-color);
 }
 
 .right-section {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: var(--spacing-md);
 }
 
 .notification-icon {
     font-size: 20px;
-    color: white;
+    color: var(--text-color);
     cursor: pointer;
     transition: color 0.3s;
 }
 
 .notification-icon:hover {
-    color: #000000;
+    color: var(--hover-color);
 }
 
 .avatar {
@@ -58,7 +60,10 @@
 }
 
 .username {
-    color: white;
-    margin-left: 8px;
-    font-size: 14px;
+    color: var(--text-color);
+    font-size: var(--font-size-sm);
+}
+
+.themeSwitch {
+    transform: scale(0.85);
 }
