@@ -60,6 +60,18 @@
 
 :global(.slick-dots li.slick-active button) {
     background-color: var(--text-color) !important;
-    color: var(--text-color);
+    opacity: 1;
+}
+
+:global(.slick-dots li button::after) {
+    content: '';
+    background-color: var(--text-color) !important; /* 확실한 어두운 중간톤 */
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
     opacity: 1;
 }
