@@ -50,17 +50,16 @@
 /* ✅ Carousel dots 다크/라이트 대응 */
 :global(.slick-dots li button) {
     background-color: var(--text-color) !important;
-    opacity: 0.3;
     border: none;
+    opacity: 0.3;
     border-radius: 50%;
-    width: 10px;
-    height: 10px;
-    transition: background-color 0.3s, opacity 0.3s;
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1); /* 💡 라이트모드 가시성 향상 */
+    width: 8px;
+    height: 8px;
+    box-shadow: none;
 }
 
 :global(.slick-dots li.slick-active button) {
-    background-color: var(--primary-color) !important; /* ✔️ 대비를 위해 강조 색상 사용 */
+    background-color: var(--text-color) !important;
+    color: var(--text-color);
     opacity: 1;
-    box-shadow: 0 0 0 2px var(--primary-color);
 }
