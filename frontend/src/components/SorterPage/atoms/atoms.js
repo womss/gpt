@@ -13,6 +13,7 @@ export const addElementModalVisibleAtom = atom(false);
 export const attributeModalVisibleAtom = atom(false);
 export const sorterModalVisibleAtom = atom(false);
 export const elementDetailModalAtom = atom(false);
+export const popoverVisibleAtom = atom(false);
 // 카테고리 관련 상태
 export const newCategoryAtom = atom('');
 export const categoriesAtom = atom([]);
@@ -29,6 +30,7 @@ export const editingElementIndexAtom = atom(null);
 export const elementsDataAtom = atom([{ key_name: "", value_name: "" }]);
 export const selectedElementIdAtom = atom (0);
 export const newElementNameAtom = atom('');
+export const newElementPriceAtom = atom(0);
 export const selectedElementIdsAtom = atom([]);
 export const addElementNameAtom = atom('');
 export const addElementCostAtom = atom('');
@@ -46,6 +48,8 @@ export const contextMenuAtom = atom({
 
 export const elementDetailDataAtom = atom(null);
 export const isEditingAtom = atom(false);
+export const tempValueAtom = atom('');
+export const editingElementIdAtom = atom(null);
 
 
 // 카드 관련 상태

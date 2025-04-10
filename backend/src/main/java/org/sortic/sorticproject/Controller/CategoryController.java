@@ -3,6 +3,7 @@ package org.sortic.sorticproject.Controller;
 
 import org.sortic.sorticproject.Entity.Category;
 import org.sortic.sorticproject.Entity.Element;
+import org.sortic.sorticproject.Mapper.CategoryMapper;
 import org.sortic.sorticproject.Service.CategoryService;
 import org.sortic.sorticproject.Service.ElementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +57,12 @@ public class CategoryController {
         return null; // 카테고리가 없는 경우
 
 
+    }
+
+    // 사용자 ID로 카테고리 개수 조회
+    @GetMapping("/count_categories")
+    public int countCategories(@RequestParam String user_id) {
+        return categoryService.countCategoriesByUserId(user_id);
     }
 
 

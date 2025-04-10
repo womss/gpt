@@ -41,6 +41,12 @@ public interface ElementMapper {
             "WHERE elements_name_id = #{elements_name_id}")
     void updateElement(@Param("elements_name_id") int elements_name_id, @Param("elements_name") String elements_name);
 
+    @Update("UPDATE Elements_name SET elements_price = #{elements_price} " +
+            "WHERE elements_name_id = #{elements_name_id}")
+    void updateElementPrice(@Param("elements_name_id") int elements_name_id,
+                            @Param("elements_price") int elements_price);
+
+
     // 상품 삭제
     @Delete("DELETE FROM Elements_name WHERE elements_name_id = #{elements_name_id}")
     void deleteElement(int elements_name_id);

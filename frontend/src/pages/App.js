@@ -5,6 +5,7 @@ import SorticHeader from '../components/Header/Header';
 import LandingPage from '../components/LandingPage/LandingPage';
 import SorterPage from '../components/SorterPage/components/SorterPage';
 import LoginPage from '../components/LoginPage/LoginPage';
+import SorterDefaultPage from '../components/SorterPage/components/SorterDefaultPage';
 
 const App = () => {
     // 전역 테마 초기화
@@ -15,12 +16,15 @@ const App = () => {
 
     return (
         <>
+
         <SorticHeader />
         <Routes>
             <Route path="/" element={<LandingPage />} />
-            <Route path="/sorter" element={<SorterPage />} />
             <Route path="/login" element={<LoginPage />} />
-        </Routes>
+            <Route path="/sorter" element={<SorterPage />} />
+            <Route path="/sorterDefaultPage" element={<SorterDefaultPage />} />
+            </Routes>
+
         </>
     );
 };

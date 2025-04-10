@@ -38,7 +38,8 @@ import {
     selectedElementIdAtom,
     messageAtom, attributeModalVisibleAtom,
     selectedElementIdsAtom, addedElementIdAtom,
-    contextMenuAtom
+    contextMenuAtom,
+    newElementPriceAtom
 } from '../atoms/atoms';
 
 // Elements 가져오기
@@ -66,6 +67,7 @@ export const setSelectedElementAction = atom(
     null,
     (get, set, elementId) => {
         console.log("🖱️ 선택된 요소 ID:", elementId);
+
         set(selectedElementIdAtom, elementId);
     }
 );
@@ -147,7 +149,7 @@ export const addElementAction = atom(
                 set(addedElementIdAtom, newElementId);
                 set(addElementNameAtom, "");
                 set(addElementCostAtom, "");
-
+                set(selectedElementIdAtom, newElementId);
                 set(addElementModalVisibleAtom, false);
                 set(attributeModalVisibleAtom, true);
                 set(messageAtom, { type: 'success', content: '요소가 추가되었습니다.' });
@@ -192,15 +194,7 @@ export const handleDeleteElementAction = atom(
         }
     }
 );
-// 요소 이름 변경 핸들러
-export const handleElementNameChangeAction = atom(
-    (get) => get(newElementNameAtom),
-    (get, set, e) => {
 
-    }
-);
-
-// 요소 더블 클릭으로 편집 모드 시작
 
 // 요소 더블 클릭으로 편집 모드 시작
 export const handleElementDoubleClickAction = atom(
@@ -328,6 +322,53 @@ export const handleElementNameSaveAction = atom(
         }
     }
 );
+
+
+export const handleElementPriceSaveAction = atom(
+    null,
+    async (get, set) => {
+        const newPrice = get(newElementPriceAtom);
+        const editingElementIndex = get(editingElementIndexAtom);
+        const cards = get(cardsAtom);
+
+        if (newPrice === null || isNaN(newPrice)) {
+            console.warn("🚨 유효한 가격을 입력하세요.");
+            return;
+        }
+
+        if (editingElementIndex === null || editingElementIndex === undefined) {
+            console.warn("🚨 유효하지 않은 요소 ID!");
+            return;
+        }
+
+        try {
+            await axios.put('http://localhost:8080/api/elements/update_element_price', {
+                elements_name_id: editingElementIndex,
+                elements_price: newPrice
+            }, {
+                headers: { 'Content-Type': 'application/json; charset=UTF-8' }
+            });
+
+            message.success("가격 수정 완료!");
+            console.log("✅ 가격 서버 수정 성공");
+
+            // 카드 목록 갱신
+            const updatedCards = cards.map(card =>
+                card.elements_name_id === editingElementIndex
+                    ? { ...card, elements_price: newPrice }
+                    : card
+            );
+
+            set(cardsAtom, updatedCards);
+            set(isEditingElementAtom, false);
+            set(editingElementIndexAtom, null);
+
+        } catch (error) {
+            console.warn("🚨 가격 수정 실패!");
+            console.error("에러 상세:", error.response?.data || error.message);
+        }
+    });
+
 
 
 

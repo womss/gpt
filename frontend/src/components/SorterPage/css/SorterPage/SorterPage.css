@@ -7,9 +7,9 @@ body {
     padding: 0;
 }
 
-/* Sorter Page Section */
+
 .sorter-section {
-    margin-top: 100px;
+    margin-top: 20px;
     padding: 20px;
     max-width: 1200px;
     margin-left: auto;
@@ -20,6 +20,22 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    height : 40%;
+}
+
+.sorter-section-default {
+    margin-top: 20px;
+    padding: 20px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color:#4C585B ; /* White background */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color : white;
 }
 
 /* Sorter Header */
@@ -44,27 +60,12 @@ body {
     transition: all 0.3s ease;
 }
 
-/* Hover Effect for Buttons */
 .sorter-btn:hover {
-    background-color: #3b4a4d;
-    transform: scale(1.05);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    background-color: #e0e0e0;
+    color: #000000;
+    transform: scale(1.08);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
-
-/* Category Button Styles */
-.category-btn {
-    font-size: 18px;
-    color: #fff;
-    background-color: #4C585B;
-    border: none;
-    padding: 12px 18px;
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    transition: all 0.3s ease;
-}
-
 
 
 /* Modal Styles */
@@ -111,4 +112,115 @@ body {
 .sorter-header .nav-icon:hover {
     transform: scale(2); /* 호버 시 크기 증가 */
     color: #B7B7B7; /* 파란색 변경 */
+}
+
+/* Tooltip 디자인 커스터마이징 */
+.custom-tooltip .ant-tooltip-inner {
+    background-color: #f5fbfc; /* 밝은 민트 그레이 배경 */
+    color: #2c2c2c; /* 진한 중회색 텍스트 */
+    font-size: 14px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-weight: 500;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15); /* 그림자 더 강조 */
+    transition: all 0.3s ease;
+    backdrop-filter: blur(4px); /* 유리 느낌 추가하면 더 고급스러움 */
+}
+
+.custom-tooltip .ant-tooltip-arrow::before {
+    background-color: #f5fbfc;
+}
+
+.sorter-page-section{
+    display:flex;
+
+}
+
+
+
+
+.left-arrow-box {
+    display: flex;
+    flex-direction: row; /* 🔁 세로 → 가로로 변경 */
+    align-items: center;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+.number-section {
+    font-size: 20px;
+    font-weight: bold;
+    color: #4C585B;
+    margin-left: 10px;
+}
+
+
+.left-arrow-box svg {
+    width: 40px;
+    height: 60px;
+    transform: scaleY(2) scaleX(1.5);
+    color: #4C585B;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.left-arrow-box svg.active {
+    color: #f5222d;
+}
+
+.left-arrow-wrapper{
+    margin-bottom : 220px;
+    margin-top : 105px;
+    margin-right : -20px;
+    margin-left : 130px;
+
+}
+.right-arrow-wrapper{
+    margin-bottom : 220px;
+    margin-top : 105px;
+    margin-right : 0px;
+    margin-left : px;
+}
+
+.arrow-right-btn {
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 10px;
+    background-color: transparent;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    width: 80px;
+    margin-left: -120px;
+    margin-right: 200px;
+    margin-top: -60px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+.arrow-left-btn {
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 10px;
+    background-color: transparent;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    margin-right: -100px;
+    margin-left: 75px;
+    margin-top: -60px;
+    width: 80px;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+
+
+
+.arrow-left-btn:hover,
+.arrow-right-btn:hover {
+    transform: scaleY(1.15);
+   background-color: #f1f0f0;
+    color : white;
+    cursor : pointer;
 }

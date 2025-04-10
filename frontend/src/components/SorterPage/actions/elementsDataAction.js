@@ -1,19 +1,21 @@
 import { atom } from 'jotai';
 import axios from 'axios';
+import { message } from 'antd';
 import {
     keyValuePairsAtom,
     addedElementIdAtom,
     messageAtom,
     attributeModalVisibleAtom,
     elementDetailModalAtom,
-    elementDetailDataAtom, elementAttributesAtom
+    elementDetailDataAtom, elementAttributesAtom,selectedElementIdAtom,
+    tempValueAtom,  elementsDataAtom, editingElementIndexAtom, editingElementIdAtom
 } from '../atoms/atoms';
 
 export const elementsDataAction = atom(
     null,
     async (get, set) => {
         const keyValuePairs = get(keyValuePairsAtom);
-        const elementId = get(addedElementIdAtom);
+        const elementId = get(selectedElementIdAtom);
 
         // 유효성 검사
         if (!elementId) {
@@ -55,6 +57,7 @@ export const elementsDataAction = atom(
                 {
                     headers: { 'Content-Type': 'application/json; charset=UTF-8' },
                 }
+
             );
 
             if (response.status === 200) {
@@ -92,3 +95,72 @@ export const openElementDetailAction = atom(null, async (get, set, data) => {
 export const closeElementDetailAction = atom(null, (get, set) => {
     set(elementDetailModalAtom, false);
 });
+
+export const handleKeyNameSaveAction = atom(
+    null,
+    async (get, set, { id, value }) => {
+        const editingElementId = id;
+        const elementsData = get(elementsDataAtom);
+
+        if (!value || editingElementId == null) {
+            console.warn("🚨 유효한 key_name 또는 요소 ID가 없습니다.");
+            return;
+        }
+
+        try {
+            await axios.put("http://localhost:8080/api/elements_data/update_key_name", null, {
+                params: {
+                    elements_id: editingElementId,
+                    key_name: value
+                }
+            });
+
+            const updatedData = elementsData.map(data =>
+                data.elements_id === editingElementId
+                    ? { ...data, key_name: value }
+                    : data
+            );
+
+            set(elementsDataAtom, updatedData);
+            set(editingElementIndexAtom, null);
+
+        } catch (error) {
+            console.error("🚨 key_name 수정 실패!", error.response?.data || error.message);
+        }
+    }
+);
+
+export const handleValueNameSaveAction = atom(
+    null,
+    async (get, set, { id, value }) => {
+        const editingElementId = id;
+        const elementsData = get(elementsDataAtom);
+
+        if (!value || editingElementId == null) {
+            console.warn("🚨 유효한 value_name 또는 요소 ID가 없습니다.");
+            return;
+        }
+
+        try {
+            await axios.put("http://localhost:8080/api/elements_data/update_value_name", null, {
+                params: {
+                    elements_id: editingElementId,
+                    value_name: value
+                }
+            });
+
+            const updatedData = elementsData.map(data =>
+                data.elements_id === editingElementId
+                    ? { ...data, value_name: value }
+                    : data
+            );
+
+            set(elementsDataAtom, updatedData);
+            set(editingElementIndexAtom, null);
+        } catch (error) {
+            console.error("🚨 value_name 수정 실패!", error.response?.data || error.message);
+        }
+    }
+);
+
+
