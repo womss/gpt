@@ -51,7 +51,7 @@ import {
     scrollLeftAtom, originalElementNameAtom, currentIndexAtom,
     attributeModalVisibleAtom, keyValuePairsAtom, addedElementIdAtom, selectedElementAtom,
     selectedElementIdsAtom, animationClassAtom,
-    fadeInOutAtom, newElementPriceAtom, popoverVisibleAtom
+    fadeInOutAtom, newElementPriceAtom, popoverVisibleAtom, costErrorAtom,
 } from '../atoms/atoms';
 
 
@@ -74,12 +74,12 @@ import {
     handleElementOkAction,
     handleElementNameSaveAction,
     setCurrentCategoryAction, setSelectedElementAction,
-    openContextMenuAction
+    openContextMenuAction,  toggleSelectElementAction, handleBulkDeleteElementsAction
 
 } from '../actions/elementAction';
 
 import {elementsDataAction} from "../actions/elementsDataAction";
-import { toggleSelectElementAction, handleBulkDeleteElementsAction } from '../actions/elementAction';
+import {addSorterAction, deleteSorterAction} from '../actions/sorterAction';
 const SorterPage = () => {
     const [editingElementIndex, setEditingElementIndex] = useAtom(editingElementIndexAtom);
     const [isEditingElement, setIsEditingElement] = useAtom(isEditingElementAtom);
@@ -127,7 +127,7 @@ const SorterPage = () => {
     const [keyValuePairs, setKeyValuePairs] = useAtom(keyValuePairsAtom);
     const [, addElementData] = useAtom(elementsDataAction);
     const [addedElementId, setAddedElementId] = useAtom(addedElementIdAtom);
-
+    const [costError, setCostError] = useAtom(costErrorAtom);
 
 
     const [selectedElementIds] = useAtom(selectedElementIdsAtom);
@@ -136,6 +136,11 @@ const SorterPage = () => {
     const [, handleBulkDeleteElements] = useAtom(handleBulkDeleteElementsAction);
     const [animationClass, setAnimationClass] = useAtom(animationClassAtom);
     const [fadeInOut, setFadeInOut] = useAtom(fadeInOutAtom);
+    const [, setAddSorter] = useAtom(addSorterAction);
+    const sorters = useAtomValue(sortersAtom);
+    const [, setDeleteSorter] = useAtom(deleteSorterAction);
+
+
     const navigate = useNavigate();
     const { confirm } = Modal;
     useEffect(() => {
@@ -296,6 +301,19 @@ const SorterPage = () => {
         }
     };
 
+    const handleCostChange = (e) => {
+        const value = e.target.value;
+        setAddElementCost(value);
+
+        if (value === '' || /^\d+$/.test(value)) {
+            setCostError('');
+        } else {
+            if (!costError) {
+                message.warning('숫자만 입력 가능합니다.');
+                setCostError('숫자만 입력 가능합니다.');
+            }
+        }
+    };
 
 
     const addElement = async() =>{
@@ -379,7 +397,13 @@ const SorterPage = () => {
     }, []);
     const [sectionHeight, setSectionHeight] = useState(0);
     const sectionRef = useRef(null);
+    const addSorter = () =>{
+        setAddSorter();
+    }
+    const deleteSorter = (sorterId) =>{
 
+        setDeleteSorter(sorterId);
+    }
     useEffect(() => {
         const resizeObserver = new ResizeObserver(entries => {
             if (entries[0]) {
@@ -589,7 +613,7 @@ const SorterPage = () => {
                             className= "element-name-input"
                             placeholder="가격을 입력하세요"
                             value={addElementCost}
-                            onChange={(e) => setAddElementCost(e.target.value)}
+                            onChange={handleCostChange}
 
                         />
                     </div>
@@ -675,8 +699,35 @@ const SorterPage = () => {
 
         </div>
     <div className='sorter-sort-section'>
-        <button type="text" className="sorter-btn" >Sorter</button>
+        <button type="text" className="sorter-btn" onClick={addSorter}>+ Sorter 추가</button>
 
+        <div className="sorter-list">
+            {sorters.map((sorter, index) => (
+                <div key={sorter.sorter_id || index} className="sorter-box" style={{ position: 'relative' }}>
+                    {/* 삭제 버튼 - 오른쪽 상단 */}
+                    <button
+                        onClick={() => deleteSorter(sorter.sorter_id)}
+                        style={{
+                            position: 'absolute',
+                            top: '8px',
+                            right: '8px',
+                            background: 'transparent',
+                            border: 'none',
+                            fontSize: '16px',
+                            cursor: 'pointer',
+                            color: '#888',
+                        }}
+                        title="삭제"
+                    >
+                        ❌
+                    </button>
+
+                    <h3 className="sorter-title">{sorter.sorter_name}</h3>
+
+
+                </div>
+            ))}
+        </div>
 
     </div>
     </div>
