@@ -1,5 +1,5 @@
 /* Sorter Section */
-.sorter-section {
+.sorter-sort-section {
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -16,8 +16,11 @@
     cursor: pointer;
     font-size: 18px;
     transition: all 0.3s ease;
-    margin-left : 1160px;
-    margin-top:30px;
+    margin-left:auto ;
+    margin-right:auto ;
+    margin-top : 20px;
+
+
 
 }
 

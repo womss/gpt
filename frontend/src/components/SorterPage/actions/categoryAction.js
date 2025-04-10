@@ -176,7 +176,6 @@ export const handleCategoryOkAction = atom(
 
             const addedCategory = response.data; // 추가된 카테고리 정보
             console.log("📌 추가된 카테고리:", addedCategory);
-
             // 현재 카테고리를 새로 추가된 카테고리로 변경
             set(currentCategoryAtom, addedCategory.category_id);
             set(currentCategoryNameAtom, addedCategory.category_name);
