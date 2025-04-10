@@ -1,12 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+
 import { useAtom, useAtomValue, useSetAtom} from 'jotai';
 import { Input, Modal, message , Button, Popover, Tooltip } from 'antd';
-import {  DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import {  DeleteOutlined, PlusOutlined,  LeftOutlined ,RightOutlined} from "@ant-design/icons";
 import { ArrowLeftLine, ArrowRightLine, Plus, Minus } from '@rsuite/icons';
 import ContextMenu from "./contextMenu"
 import ElementDetailModal from "./ElementDetailModal"
 import { useNavigate } from 'react-router-dom';
-
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import "../css/SorterPage/Sorter.css";
 import "../css/SorterPage/Card.css";
 import "../css/SorterPage/SorterPage.css";
@@ -52,6 +53,7 @@ import {
     selectedElementIdsAtom, animationClassAtom,
     fadeInOutAtom, newElementPriceAtom, popoverVisibleAtom
 } from '../atoms/atoms';
+
 
 import {
     fetchCategoriesAction,
@@ -375,38 +377,72 @@ const SorterPage = () => {
 
         checkCategoryCount();
     }, []);
+    const [sectionHeight, setSectionHeight] = useState(0);
+    const sectionRef = useRef(null);
 
+    useEffect(() => {
+        const resizeObserver = new ResizeObserver(entries => {
+            if (entries[0]) {
+                setSectionHeight(entries[0].contentRect.height);
+            }
+        });
+        if (sectionRef.current) {
+            resizeObserver.observe(sectionRef.current);
+        }
+
+        return () => {
+            if (sectionRef.current) {
+                resizeObserver.unobserve(sectionRef.current);
+            }
+        };
+    }, []);
 
     return (
+        <div>
         <div className="sorter-page-section">
+            <div className="left-arrow-wrapper" style={{ display: 'flex', alignItems: 'center' }}>
+                <div
+                    className= "arrow-left-btn"
+                    style={{
 
+                        height: `${sectionHeight * 0.9}px`,
 
-
-            <div className="sorter-section">
-
-                <div className='sorter-header'>
-                    {/* ← 왼쪽 화살표 */}
-                    <ArrowLeftLine
+                    }}
+                >
+                    <ChevronLeft
                         onClick={() => handleCategoryChange('prev')}
                         style={{
-                            fontSize: '50px',
-                            color: isLeftRed ? '#f5222d' : 'inherit',
-                            transition: 'color 0.3s ease',
-                        }}
-                        className="nav-icon"
-                    />
+                            width: '80px',
+                            height: '180px',
+                            fontSize: '250px',
+                            color: isLeftRed ? '#f5222d' : '#4C585B',
+                            strokeWidth: 2,
+                            transition: 'all 0.3s ease',
+                            cursor: 'pointer',
+                            backgroundColor: 'transparent',
+                            marginLeft : '-5px',
+                            fontFamily :' "Orbit", sans-serif;'
 
-                    {/* ← 왼쪽 번호 */}
-                    <div className="number-section-left">
-                        <h1
-                            style={{
-                                color: isLeftRed ? '#f5222d' : 'inherit',
-                                transition: 'color 0.3s ease',
-                            }}
-                        >
-                            {prevCategoryIndex + 1}
-                        </h1>
+                        }}
+                    />
+                    <div
+                        style={{
+                            fontSize: '28px',
+                            fontWeight: 'bold',
+                            color: isLeftRed ? '#f5222d' : '#4C585B',
+                            marginLeft: '-30px',
+                        }}
+                    >
+                        {prevCategoryIndex + 1}
                     </div>
+                </div>
+            </div>
+
+            <div className="sorter-section" ref={sectionRef}>
+
+                <div className='sorter-header'>
+
+
 
                     {/* + 추가 버튼 */}
                     <Tooltip title="카테고리를 추가" overlayClassName="custom-tooltip">
@@ -446,28 +482,7 @@ const SorterPage = () => {
                         <button className="category-btn" onClick={handleDeleteCategory}>-</button>
                     </Tooltip>
 
-                    {/* → 오른쪽 번호 */}
-                    <div className="number-section-right">
-                        <h1
-                            style={{
-                                color: isRightRed ? '#f5222d' : 'inherit',
-                                transition: 'color 0.3s ease',
-                            }}
-                        >
-                            {nextCategoryIndex + 1}
-                        </h1>
-                    </div>
 
-                    {/* → 오른쪽 화살표 */}
-                    <ArrowRightLine
-                        onClick={() => handleCategoryChange('next')}
-                        style={{
-                            fontSize: '50px',
-                            color: isRightRed ? '#f5222d' : 'inherit',
-                            transition: 'color 0.3s ease',
-                        }}
-                        className="nav-icon"
-                    />
                 </div>
 
 
@@ -620,13 +635,51 @@ const SorterPage = () => {
 
 
             </div>
+            <div className="right-arrow-wrapper" style={{ display: 'flex', alignItems: 'center' }}>
+                <div className= "arrow-right-btn"
+                     style={{
+                         height: `${sectionHeight * 0.9}px`,
+                     }}
+                >
+                    <div
+                        style={{
+                            fontSize: '28px',
+                            fontWeight: 'bold',
+                            marginLeft : '25px',
+                            color: isRightRed ? '#f5222d' : '#4C585B',
+
+                        }}
+                    >
+                        {nextCategoryIndex + 1}
+                    </div>
+                    <ChevronRight
+                        onClick={() => handleCategoryChange('next')}
+                        style={{
+                            width: '80px',
+                            height: '180px',
+                            fontSize: '250px',
+                            color: isRightRed ? '#f5222d' : '#4C585B',
+                            strokeWidth: 2,
+                            transition: 'all 0.3s ease',
+                            cursor: 'pointer',
+                            backgroundColor: 'transparent',
+                            marginRight: '-5px',
+                            marginLeft : '-30px',
+                            fontFamily: '"Orbit", sans-serif;',
+                        }}
+                    />
+                </div>
+            </div>
 
 
 
+        </div>
+    <div className='sorter-sort-section'>
+        <button type="text" className="sorter-btn" >Sorter</button>
 
-</div>
 
-
+    </div>
+    </div>
 
     );
 };
