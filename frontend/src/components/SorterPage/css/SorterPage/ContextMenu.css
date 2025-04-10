@@ -1,0 +1,42 @@
+.context-menu-section {
+    min-width: 120px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 6px 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: fadeIn 0.15s ease-in-out;
+}
+
+.context-menu-section div {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+}
+.detail-section:hover {
+    background-color: #4C585B; /* 배경만 빨강 느낌 */
+    color : white;
+}
+
+.context-delete:hover {
+    background-color: #ffe5e5; /* 삭제는 기존처럼 텍스트 빨강 */
+    color: red;
+}
+
+
+
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

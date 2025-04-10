@@ -4,10 +4,13 @@ package org.sortic.sorticproject.Controller;
 import org.sortic.sorticproject.Entity.Category;
 import org.sortic.sorticproject.Entity.Element;
 import org.sortic.sorticproject.Service.CategoryService;
+import org.sortic.sorticproject.Service.ElementService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/categories")
@@ -15,12 +18,15 @@ public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private ElementService elementService;
 
     @PostMapping("/add_category")
     public Category addCategory(@RequestBody Category category) {
 
         return categoryService.addCategory(category);
     }
+
 
     @PostMapping("/delete_category")
     public String deleteCategory(@RequestBody Category category) {

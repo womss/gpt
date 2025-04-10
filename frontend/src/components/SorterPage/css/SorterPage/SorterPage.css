@@ -105,6 +105,7 @@ body {
     color: #333; /* 기본 검정색 */
     transition: transform 0.2s ease, color 0.2s ease;
     cursor: pointer;
+
 }
 
 .sorter-header .nav-icon:hover {
