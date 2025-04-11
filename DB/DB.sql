@@ -11,7 +11,7 @@ CREATE TABLE Login (
   created_signup_time TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '회원가입 시간',
   PRIMARY KEY (user_id)
 ) COMMENT='회원 테이블';
-
+select * from Login;
 
 INSERT INTO Login (user_id, password, username, phone, email, grade, created_signup_time)
 VALUES ('user123', 'password1234', '홍길동', '010-1234-5678', 'hong@example.com', 1, NOW());
