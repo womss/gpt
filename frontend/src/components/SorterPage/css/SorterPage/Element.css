@@ -4,12 +4,18 @@
     font-size: 30px;
     border-radius: 8px;
     cursor: pointer;
-    width: 200px;
-    height: 40px;
+    width: 10vw;
+    height: 4.5vh;
     border: 2px solid #707070;
     align-items: center;
-    transition: all 0.3s ease;
-    margin-right: 400px;
+
+    justify-content: center;
+    margin-right: auto;
+    display: flex;
+
+
+
+
 }
 
 /* Hover 효과 */
@@ -24,16 +30,18 @@
 .element-btn-delete {
     font-size: 18px;
     color: #707070;
-    width: 200px;
-    height: 40px;
+    width: 10vw;
+    height: 4.5vh;
     border: 2px solid #707070;
     border-radius: 8px;
     cursor: pointer;
-    margin-left: 400px;
     align-items: center;
-    transition: all 0.3s ease;
+
     background-color: transparent;
+    margin-left: auto; /* 여기! */
 }
+
+
 
 .element-btn-delete:hover {
     background-color: #FA7070;
@@ -47,7 +55,10 @@
 }
 .element-btn-section {
     display: flex;
-    margin-top: 50px;
+    justify-content: space-between;
+    margin-top : 20px;
+    width: 80%; /* 또는 적당한 너비 */
+    padding: 0 20px;
 }
 
 .category-item.selected {
@@ -98,7 +109,9 @@
     font-weight: 500;
     color: #4C585B;
 
+
 }
+
 
 /* 인풋 필드 */
 .element-name-input {
@@ -143,3 +156,4 @@
 .context-menu > div:hover {
     background: #f5f5f5;
 }
+

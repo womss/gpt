@@ -107,17 +107,29 @@ export const handleBulkDeleteElementsAction = atom(
 
             console.log("✅ 삭제 응답:", response);
 
+            // 삭제된 요소 이름들 찾기
+            const deletedNames = cards
+                .filter(card => selectedIds.includes(card.elements_name_id))
+                .map(card => card.elements_name);
+
             // 상태 업데이트
             const updatedCards = cards.filter(card => !selectedIds.includes(card.elements_name_id));
             set(cardsAtom, updatedCards);
             set(selectedElementIdsAtom, []);
-            message.success("요소들이 삭제되었습니다!");
+
+            // 메시지 출력
+            if (deletedNames.length === 1) {
+                message.success(`"${deletedNames[0]}"(이)가 삭제되었습니다!`);
+            } else {
+                message.success("요소들이 삭제되었습니다!");
+            }
         } catch (error) {
             console.error("🚨 일괄 삭제 실패:", error.response?.data || error.message);
             message.error("요소 삭제에 실패했습니다.");
         }
     }
 );
+
 
 
 export const addElementAction = atom(
