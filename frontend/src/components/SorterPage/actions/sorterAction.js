@@ -68,3 +68,17 @@ export const deleteSorterAction = atom(null, async (get, set, sorterIdToDelete) 
     set(messageAtom, { type: 'error', content: '정렬자 삭제에 실패했습니다.' });
   }
 });
+
+export const fetchSortersByUserAction = atom(null, async (get, set) => {
+  try {
+    const response = await axios.get(`http://localhost:8080/api/sorter/user/user123`);
+    const data = response.data;
+
+    console.log(data);
+    set(sortersAtom, data);
+
+  } catch (error) {
+    console.error('🚨 사용자 정렬자 불러오기 실패:', error);
+
+  }
+});

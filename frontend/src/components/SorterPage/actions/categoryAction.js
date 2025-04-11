@@ -38,15 +38,15 @@ export const fetchAndNumberCategoriesAction = atom(
 
             set(categoriesAtom, numberedCategories);
 
-            // 첫 번째 카테고리를 자동 선택
-            if (numberedCategories.length > 0) {
-                const firstCategory = numberedCategories[0]; // 첫 번째 카테고리 선택
+            // 첫 번째 카테고리를 자동 선택 (이미 선택된 게 없을 때만)
+            const current = get(currentCategoryAtom);
+            if (!current && numberedCategories.length > 0) {
+                const firstCategory = numberedCategories[0];
                 set(currentCategoryAtom, firstCategory.category_id);
                 set(currentCategoryNameAtom, firstCategory.category_name);
-
-                // 첫 번째 카테고리에 해당하는 요소 불러오기
                 await set(fetchElementsByCategoryAction, firstCategory.category_id);
             }
+
 
         } catch (error) {
             console.error('카테고리 조회 실패:', error);
