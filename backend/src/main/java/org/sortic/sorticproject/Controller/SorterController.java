@@ -3,47 +3,40 @@ package org.sortic.sorticproject.Controller;
 import org.sortic.sorticproject.Entity.Sorter;
 import org.sortic.sorticproject.Service.SorterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/api/sorters")
+@RequestMapping("/api/sorter")
 public class SorterController {
 
     @Autowired
     private SorterService sorterService;
 
-    // 정렬자 추가
-    @PostMapping("/add_sorter")
-    public String addSorter(@RequestBody Sorter sorter) {
+    @PostMapping("/add")
+    public ResponseEntity<Sorter> addSorter(@RequestBody Sorter sorter) {
         sorterService.addSorter(sorter);
-        return "정렬자가 성공적으로 추가되었습니다!";
+        return ResponseEntity.ok(sorter);
     }
 
-    // 정렬자 조회
-    @GetMapping("/get_sorter")
-    public Sorter getSorter(@RequestParam int sorter_id) {
-        return sorterService.getSorterById(sorter_id);
+    @PostMapping("/delete")
+    public ResponseEntity<String> deleteSorter(@RequestBody Map<String, Integer> payload) {
+        int sorterId = payload.get("sorter_id");
+        sorterService.deleteSorter(sorterId);
+        return ResponseEntity.ok("삭제 완료");
     }
 
-    // 사용자별 정렬자 목록 조회
-    @GetMapping("/get_sorters_by_user")
-    public List<Sorter> getSortersByUser(@RequestParam String user_id) {
-        return sorterService.getSortersByUserId(user_id);
+    @PostMapping("/reorder")
+    public ResponseEntity<List<Sorter>> reorderSorters(@RequestBody List<Sorter> sorters) {
+        List<Sorter> reordered = sorterService.reorderSorterNumbers(sorters);
+        return ResponseEntity.ok(reordered);
     }
 
-    // 정렬자 수정
-    @PutMapping("/update_sorter")
-    public String updateSorter(@RequestParam int sorter_id, @RequestParam String sorter_name, @RequestParam int elements_id) {
-        sorterService.updateSorter(sorter_id, sorter_name, elements_id);
-        return "정렬자가 성공적으로 수정되었습니다!";
-    }
-
-    // 정렬자 삭제
-    @DeleteMapping("/delete_sorter")
-    public String deleteSorter(@RequestParam int sorter_id) {
-        sorterService.deleteSorter(sorter_id);
-        return "정렬자가 성공적으로 삭제되었습니다!";
+    @GetMapping("/user/{user_id}")
+    public ResponseEntity<List<Sorter>> getUserSorters(@PathVariable String user_id) {
+        return ResponseEntity.ok(sorterService.getSortersByUserId(user_id));
     }
 }
