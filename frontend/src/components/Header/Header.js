@@ -1,6 +1,6 @@
-// components/Header/Header.js
+// src/components/Header/Header.js
 import React from 'react';
-import { Layout, Menu, Badge, Avatar } from 'antd';
+import { Layout, Menu, Badge, Avatar, Switch } from 'antd';
 import { BellOutlined, UserOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { useAtom } from 'jotai';
@@ -11,6 +11,20 @@ const { Header } = Layout;
 
 const SorticHeader = () => {
     const [user] = useAtom(userAtom);
+
+    // 다크모드 toggle
+    const toggleTheme = (checked) => {
+        document.documentElement.setAttribute('data-theme', checked ? 'dark' : 'light');
+        localStorage.setItem('theme', checked ? 'dark' : 'light');
+    };
+
+    // 페이지 진입 시 이전 설정 적용
+    React.useEffect(() => {
+        const saved = localStorage.getItem('theme');
+        if (saved) {
+            document.documentElement.setAttribute('data-theme', saved);
+        }
+    }, []);
 
     return (
         <Header className={styles['header-container']}>
@@ -28,6 +42,12 @@ const SorticHeader = () => {
                 </Badge>
                 <Avatar icon={<UserOutlined />} className={styles.avatar} />
                 <span className={styles.username}>{user.nickname || 'Guest'}</span>
+                <Switch
+                    onChange={toggleTheme}
+                    checkedChildren="🌙"
+                    unCheckedChildren="☀️"
+                    className={styles.themeSwitch}
+                />
             </div>
         </Header>
     );

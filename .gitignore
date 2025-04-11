@@ -1,4 +1,6 @@
+
 .idea/
+
 ########################
 # ✅ Node.js / React
 ########################
@@ -47,7 +49,8 @@ pnpm-debug.log*        # pnpm 에러 로그
 
 node_modules/          # 패키지 설치 폴더 (npm/yarn)
 dist/                  # Vite, Vue 등 빌드 결과물
-frontend/build/                 # React 등 빌드 결과물
+build/                 # React 등 빌드 결과물
+frontend/build/        # React 등 빌드 결과물
 .cache/                # 캐시 폴더 (vite, next 등)
 coverage/              # 테스트 커버리지 결과
 
@@ -56,7 +59,8 @@ coverage/              # 테스트 커버리지 결과
 ########################
 
 .gradle/                   # Gradle 빌드 캐시
-backend/build/                     # Java 빌드 결과물
+build/                     # Java 빌드 결과물
+backend/build/             # Java 빌드 결과물
 out/                       # Java 클래스 빌드 폴더
 *.class                    # 컴파일된 바이트코드
 target/                    # Maven 등에서 사용되는 빌드 폴더
