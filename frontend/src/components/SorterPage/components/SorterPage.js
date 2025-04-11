@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import Slider from "react-slick";
 import { useAtom, useAtomValue, useSetAtom} from 'jotai';
 import { Input, Modal, message , Button, Popover, Tooltip, Typography } from 'antd';
 import {  DeleteOutlined, PlusOutlined,  LeftOutlined ,RightOutlined} from "@ant-design/icons";
@@ -151,7 +153,16 @@ const SorterPage = () => {
 
     const navigate = useNavigate();
     const { confirm } = Modal;
-
+    const settings = {
+        dots: true,
+        infinite: true, // 무한 루프
+        speed: 500,
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        swipeToSlide: true,
+        centerMode: true,
+        centerPadding: '40px'
+    };
     useEffect(() => {
         if (currentCategory !== null) {
             console.log("🚀 currentCategory가 변경됨ㅋㅋ, 새로운 요소 가져오기:", currentCategory);
@@ -754,44 +765,46 @@ const SorterPage = () => {
 
 
 
-            </div>
+
+
 
             </div>
+
+
 
 
 
             <div className="sorter-sort-section">
+
+
                 <button type="text" className="sorter-btn" onClick={addSorter}>
                     + Sorter 추가
                 </button>
 
-                {/* 가로 스크롤 가능하게 감싼 부분 */}
                 <div className="sorter-scroll-wrapper">
-                    <div className="sorter-list">
+                    <Slider {...settings}>
                         {sorters.map((sorter, index) => (
-                            <div key={sorter.sorter_id || index} className="sorter-wrapper">
-                                <Title level={4} className="sorter-title">
-                                    <SlidersHorizontal style={{ marginRight: 8, verticalAlign: 'middle' }} />
-                                    {sorter.sorter_name}
-                                </Title>
-                                <div className="sorter-box">
-                                    <button
-                                        onClick={() => deleteSorter(sorter.sorter_id)}
-                                        className="delete-btn"
-                                        title="삭제"
-                                    >
-                                        <X size={18} color="black" />
-                                    </button>
+                            <div key={index}>
+                                <div className="sorter-wrapper">
+                                    <div className="sorter-title -section">{sorter.sorter_name}</div>
+                                    <div className="sorter-box">
+                                        <button
+                                            className="delete-btn"
+                                            onClick={() => deleteSorter(sorter.sorter_id)}
+                                        >
+                                            <X size={18} />
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         ))}
-                    </div>
+                    </Slider>
                 </div>
             </div>
 
 
         </div>
-
+        </div>
     );
 };
 

@@ -1,3 +1,4 @@
+// frontend/src/components/LandingPage/Carousel.js
 import React from 'react';
 import { Carousel as AntCarousel } from 'antd';
 

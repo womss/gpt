@@ -2,22 +2,63 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 50px;
+    padding: var(--spacing-xl);
+    height: 100vh;
+    box-sizing: border-box;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-family);
 }
 
 .left {
     flex: 1;
-    padding-right: 40px;
+    padding-right: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .right {
     flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .buttons {
-    margin-top: 20px;
+    margin-top: var(--spacing-md);
+    display: flex;
 }
 
 .buttons button {
-    margin-right: 10px;
+    margin-right: var(--spacing-sm);
+}
+
+/* ✅ Title, Text 다크모드 대응 강제 적용 */
+.title {
+    color: var(--text-color) !important;
+}
+
+.description {
+    color: var(--text-color) !important;
+    display: block;
+    font-size: var(--font-size-md);
+    margin-bottom: var(--spacing-md);
+}
+
+
+/* ✅ Carousel dots 다크/라이트 대응 */
+:global(.slick-dots li button) {
+    background-color: var(--text-color) !important;
+    border: none;
+    opacity: 0.3;
+    border-radius: 50%;
+    width: 8px;
+    height: 8px;
+    box-shadow: none;
+}
+
+:global(.slick-dots li.slick-active button) {
+    background-color: var(--text-color) !important;
+    opacity: 1;
 }
