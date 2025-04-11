@@ -56,8 +56,8 @@
 .element-btn-section {
     display: flex;
     justify-content: space-between;
-    margin-top: 20px;
-    width: 100%; /* 또는 적당한 너비 */
+    margin-top : 20px;
+    width: 80%; /* 또는 적당한 너비 */
     padding: 0 20px;
 }
 
@@ -109,7 +109,9 @@
     font-weight: 500;
     color: #4C585B;
 
+
 }
+
 
 /* 인풋 필드 */
 .element-name-input {
