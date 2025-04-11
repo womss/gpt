@@ -45,6 +45,7 @@ export const contextMenuAtom = atom({
     y: 0,
     targetId: null,
 });
+export const costErrorAtom = atom('');
 
 export const elementDetailDataAtom = atom(null);
 export const isEditingAtom = atom(false);
@@ -71,6 +72,9 @@ export const scrollLeftAtom = atom(0);
 
 export const animationClassAtom = atom('');
 export const fadeInOutAtom = atom(false);
+
+// Sorter 관련 상태
+
 
 
 

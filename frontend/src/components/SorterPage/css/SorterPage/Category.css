@@ -6,7 +6,7 @@
 }
 
 /* Category Buttons */
-.category-btn, .category-btn-box {
+ .category-btn-box {
     font-size: 18px;
     color: #fff;
     background-color: #4C585B;
@@ -15,20 +15,31 @@
     cursor: pointer;
     transition: all 0.3s ease;
 }
-
+/* 카테고리 이름 이상하게 여백 들어가있음*/
+.category-name-title{
+    margin-top: -3px;
+}
 .category-btn {
-    padding: 12px 18px;
+
     justify-content: center;
     display: flex;
     align-items: center;
-    width: 200px;
-    height: 40px;
+    width: 10vw;
+    height: 4.5vh;
+    background-color: #4C585B;
+    border: none;
+    border-radius: 8px;
+    color : #fff;
+    font-size: 30px;
 }
 
 .category-btn:hover, .category-btn-box:hover {
-    background-color: #3b4a4d;
+
     transform: scale(1.05);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    background-color: #e0e0e0;
+    color : black;
+    cursor:pointer;
 }
 
 .category-btn i {
@@ -49,16 +60,22 @@
 
 /* Category Name */
 .category-name {
+    display: flex;
     font-family: "Orbit", sans-serif;
     font-size: 1.6rem;
     font-weight: bold;
     color: white;
     background-color: #4C585B;
-    padding: 14px 22px;
+    width : 30vw;
+    height : 10vh;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
     border-radius: 10px;
-    display: inline-block;
+
     cursor: pointer;
-    transition: all 0.3s ease;
+
 }
 
 .category-name:hover {
