@@ -78,7 +78,7 @@ export const isComittingSorterAtom = atom(false);
 export const edtingSorterIdAtom = atom(null);
 export const editedSorterNameAtom = atom("");
 export const sorterInputValueAtom = atom("");
-
+export const selectedSortersAtom = atom([]);
 
 
 

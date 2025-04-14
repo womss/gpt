@@ -55,7 +55,8 @@ import {
     attributeModalVisibleAtom, keyValuePairsAtom, addedElementIdAtom, selectedElementAtom,
     selectedElementIdsAtom, animationClassAtom,
     fadeInOutAtom, newElementPriceAtom, popoverVisibleAtom, costErrorAtom,
-    editedSorterNameAtom,edtingSorterIdAtom,sorterInputValueAtom, isComittingSorterAtom
+    editedSorterNameAtom,edtingSorterIdAtom,sorterInputValueAtom, isComittingSorterAtom,
+    selectedSortersAtom
 } from '../atoms/atoms';
 
 
@@ -148,8 +149,7 @@ const SorterPage = () => {
     const [, setDeleteSorter] = useAtom(deleteSorterAction);
     const[, setFetchSortersByUser] = useAtom(fetchSortersByUserAction);
 
-
-    const [isCommittingSorter, setIsCommittingSorter] = useAtom(isComittingSorterAtom);
+    const [selectedSorters, setSelectedSorters] = useAtom(selectedSortersAtom);
     const [editingSorterId, setEditingSorterId] = useAtom(edtingSorterIdAtom);
     const [inputValue, setInputValue] = useAtom(editedSorterNameAtom);
     const [, updateSorterName] = useAtom(updateSorterNameAction)
@@ -494,6 +494,22 @@ const SorterPage = () => {
         setEditingSorterId(null);  // 편집 모드 종료
     };
 
+    const handleSorterClick = (sorter_id) => {
+        setSelectedSorters((prevSelected) => {
+            const newSelected = prevSelected.includes(sorter_id)
+                ? prevSelected.filter((id) => id !== sorter_id) // 선택 해제
+                : [...prevSelected, sorter_id]; // 선택
+
+            console.log(newSelected); // 상태 변경 후 상태 출력
+            return newSelected;
+        });
+    };
+
+    const handleDeleteSelectedSorters = () => {
+        // 선택된 sorter들 삭제 로직
+        deleteSorter(selectedSorters);
+        setSelectedSorters([]); // 삭제 후 선택된 sorter들 초기화
+    };
 
 
 
@@ -820,38 +836,38 @@ const SorterPage = () => {
                 <div className="sorter-scroll-wrapper">
                     <Slider {...settings}>
                         {sorters.map((sorter) => (
-                            <div key={sorter.sorter_id}>
+                            <div
+                                key={sorter.sorter_id}
+                                onClick={() => handleSorterClick(sorter.sorter_id)} // sorter 클릭 시 선택/해제
+                                className={selectedSorters.includes(sorter.sorter_id) ? 'selected-sorter' : ''}
+                            >
                                 <div className="sorter-wrapper">
                                     <div
-                                        className={`sorter-title -section`}
+                                        className="sorter-title -section"
                                         onDoubleClick={() => handleSorterNameDoubleClick(sorter.sorter_id, sorter.sorter_name)}
                                     >
                                         {editingSorterId === sorter.sorter_id ? (
                                             <input
                                                 autoFocus
-                                                value={inputValue ?? ''} // 입력 필드 값 설정
-                                                onChange={(e) => setInputValue(e.target.value)} // 값 변경 시 업데이트
-                                                onBlur={(e) => {
-                                                    // 값이 변경된 경우에만 저장하도록 체크
+                                                value={inputValue ?? ''}
+                                                onChange={(e) => setInputValue(e.target.value)}
+                                                onBlur={() => {
                                                     if (inputValue !== sorter.sorter_name) {
-                                                        handleSaveSorterName(sorter.sorter_id); // 값이 변경되었으면 저장
-                                                    } else {
-
+                                                        handleSaveSorterName(sorter.sorter_id);
                                                     }
                                                 }}
                                                 onKeyDown={(e) => {
                                                     if (e.key === 'Enter') {
                                                         handleSaveSorterName(sorter.sorter_id);
                                                     } else if (e.key === 'Escape') {
-                                                        setEditingSorterId(null); // 또는 입력창을 닫는 함수
+                                                        setEditingSorterId(null);
                                                     }
-                                                }}// Enter 눌렀을 때 저장
+                                                }}
                                             />
                                         ) : (
                                             sorter.sorter_name
                                         )}
                                     </div>
-
 
                                     <div className="sorter-box">
                                         <button
@@ -865,6 +881,13 @@ const SorterPage = () => {
                             </div>
                         ))}
                     </Slider>
+
+                    {/* 삭제 버튼: 선택된 sorter들을 삭제 */}
+                    {selectedSorters.length > 0 && (
+                        <button className="delete-selected-btn" onClick={handleDeleteSelectedSorters}>
+                            Delete Selected Sorters
+                        </button>
+                    )}
                 </div>
             </div>
 
