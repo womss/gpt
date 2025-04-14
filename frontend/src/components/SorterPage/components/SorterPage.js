@@ -833,13 +833,19 @@ const SorterPage = () => {
                                                 onChange={(e) => setInputValue(e.target.value)} // 값 변경 시 업데이트
                                                 onBlur={(e) => {
                                                     // 값이 변경된 경우에만 저장하도록 체크
-                                                    if (inputValue === sorter.sorter_name) {
-                                                        setEditingSorterId(null); // 입력값이 원래 값과 같으면 입력창을 없애고 돌아감
-                                                    } else {
+                                                    if (inputValue !== sorter.sorter_name) {
                                                         handleSaveSorterName(sorter.sorter_id); // 값이 변경되었으면 저장
+                                                    } else {
+
                                                     }
                                                 }}
-                                                onKeyDown={(e) => e.key === 'Enter' && handleSaveSorterName(sorter.sorter_id)} // Enter 눌렀을 때 저장
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        handleSaveSorterName(sorter.sorter_id);
+                                                    } else if (e.key === 'Escape') {
+                                                        setEditingSorterId(null); // 또는 입력창을 닫는 함수
+                                                    }
+                                                }}// Enter 눌렀을 때 저장
                                             />
                                         ) : (
                                             sorter.sorter_name
