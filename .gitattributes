@@ -1,0 +1,21 @@
+/gradlew text eol=lf
+*.bat text eol=crlf
+*.jar binary
+# 텍스트 파일은 자동 줄바꿈 (OS 간 충돌 방지)
+* text=auto
+
+# 이미지나 바이너리 파일은 diff/merge 제외
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.psd binary
+*.woff binary
+*.woff2 binary
+
+# GitHub 언어 통계 정확도 향상
+*.jsp linguist-language=HTML
+*.sql linguist-language=SQL
+*.js linguist-language=JavaScript
+*.java linguist-language=Java

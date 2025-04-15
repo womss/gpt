@@ -1,0 +1,53 @@
+:root {
+    /* ✅ 색상 (Color Palette) */
+    --bg-color: #ffffff;
+    --text-color: #000000;
+    --primary-color: #1890ff;
+    --secondary-color: #f0f2f5;
+    --link-color: #1890ff;
+    --hover-color: #40a9ff;
+    --error-color: #ff4d4f;
+    --success-color: #52c41a;
+
+    /* ✅ 박스/섹션 배경 */
+    --box-bg: #ffffff;
+    --header-bg: #f5f5f5;
+
+    /* ✅ 그림자 */
+    --shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+    /* ✅ 폰트 (Typography) */
+    --font-family: 'Segoe UI', 'Pretendard', sans-serif;
+    --font-size-sm: 13px;
+    --font-size-md: 15px;
+    --font-size-lg: 18px;
+    --font-weight-regular: 400;
+    --font-weight-bold: 600;
+
+    /* ✅ 여백 (Spacing) */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+
+    /* ✅ 테두리 */
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+}
+
+[data-theme="dark"] {
+    --bg-color: #1f1f1f;
+    --text-color: #eaeaea;
+    --primary-color: #40a9ff;
+    --secondary-color: #2b2b2b;
+    --link-color: #40a9ff;
+    --hover-color: #69c0ff;
+    --error-color: #ff7875;
+    --success-color: #95de64;
+
+    --box-bg: #2c2c2c;
+    --header-bg: #121212;
+    --shadow: none;
+}
