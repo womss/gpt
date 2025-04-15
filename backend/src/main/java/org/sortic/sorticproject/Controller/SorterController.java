@@ -39,4 +39,21 @@ public class SorterController {
     public ResponseEntity<List<Sorter>> getUserSorters(@PathVariable String user_id) {
         return ResponseEntity.ok(sorterService.getSortersByUserId(user_id));
     }
+
+    @PutMapping("/update-name")
+    public ResponseEntity<Sorter> updateSorterName(@RequestBody Map<String, Object> payload) {
+        int sorterId = (int) payload.get("sorter_id");
+        String sorterName = (String) payload.get("sorter_name");
+
+        Sorter updatedSorter = sorterService.updateSorterName(sorterId, sorterName);
+        return ResponseEntity.ok(updatedSorter);
+    }
+    @PostMapping("/delete/multiple")
+    public ResponseEntity<String> deleteMultipleSorters(@RequestBody List<Integer> sorterIds) {
+        sorterService.deleteMultipleSorters(sorterIds);
+        return ResponseEntity.ok("다중 삭제 완료");
+    }
+
+
+
 }

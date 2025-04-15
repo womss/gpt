@@ -3,6 +3,8 @@ import axios from 'axios';
 import { sortersAtom, messageAtom } from '../atoms/atoms';
 import { message } from 'antd';
 // sorter_number와 sorter_name 재정렬 함수
+
+
 const renumberSorters = (list) => {
   return list.map((sorter, idx) => ({
     ...sorter,
@@ -26,6 +28,9 @@ export const addSorterAction = atom(null, async (get, set) => {
     set(sortersAtom, [...currentSorters, response.data]);
     set(messageAtom, { type: 'success', content: '정렬자가 추가되었습니다.' });
     console.log(get(sortersAtom));
+    message.success( `sorter${currentSorters.length + 1}`+ "(이)가 추가되었습니다!");
+
+
   } catch (error) {
     console.error('🚨 정렬자 추가 실패:', error);
     set(messageAtom, { type: 'error', content: '정렬자 추가에 실패했습니다.' });
@@ -80,5 +85,63 @@ export const fetchSortersByUserAction = atom(null, async (get, set) => {
   } catch (error) {
     console.error('🚨 사용자 정렬자 불러오기 실패:', error);
 
+  }
+});
+
+export const updateSorterNameAction = atom(null, async (get, set, { sorter_id, newName }) => {
+  try {
+    await axios.put('http://localhost:8080/api/sorter/update-name', {
+      sorter_id,
+      sorter_name: newName,
+    });
+
+    const current = get(sortersAtom);
+    const updated = current.map(s =>
+        s.sorter_id === sorter_id ? { ...s, sorter_name: newName } : s
+    );
+
+    set(sortersAtom, updated);
+    message.success("정렬자 이름이 수정되었습니다.");
+    set(messageAtom, { type: 'success', content: '정렬자 이름 수정 완료' });
+  } catch (err) {
+    console.error('이름 수정 실패', err);
+    message.error("정렬자 이름 수정 실패");
+    set(messageAtom, { type: 'error', content: '정렬자 이름 수정 실패' });
+  }
+});
+
+export const deleteMultipleSortersAction = atom(null, async (get, set, sorterIdsToDelete) => {
+  const currentSorters = get(sortersAtom);
+
+  // 삭제할 sorter가 없을 경우
+  if (!Array.isArray(sorterIdsToDelete) || sorterIdsToDelete.length === 0) {
+    message.warning("삭제할 정렬자를 선택해주세요.");
+    return;
+  }
+
+  try {
+    // 삭제 요청
+    await axios.post('http://localhost:8080/api/sorter/delete/multiple', sorterIdsToDelete);
+
+    // 삭제된 정렬자 이름 리스트
+    const deletedNames = currentSorters
+        .filter(s => sorterIdsToDelete.includes(s.sorter_id))
+        .map(s => s.sorter_name)
+        .join(', ');
+
+    // 남은 정렬자 재정렬
+    const updated = currentSorters.filter(s => !sorterIdsToDelete.includes(s.sorter_id));
+    const renamed = renumberSorters(updated);
+    const reordered = await axios.post('http://localhost:8080/api/sorter/reorder', renamed);
+
+    // 상태 업데이트
+    set(sortersAtom, reordered.data);
+    message.success(`${deletedNames}(이)가 삭제되었습니다.`);
+    set(messageAtom, { type: 'success', content: '정렬자가 삭제되었습니다.' });
+
+  } catch (error) {
+    console.error('🚨 다중 삭제 또는 재정렬 실패:', error);
+    message.error("정렬자 다중 삭제에 실패했습니다.");
+    set(messageAtom, { type: 'error', content: '정렬자 삭제 실패' });
   }
 });

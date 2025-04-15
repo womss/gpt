@@ -55,6 +55,8 @@ import {
     attributeModalVisibleAtom, keyValuePairsAtom, addedElementIdAtom, selectedElementAtom,
     selectedElementIdsAtom, animationClassAtom,
     fadeInOutAtom, newElementPriceAtom, popoverVisibleAtom, costErrorAtom,
+    editedSorterNameAtom,edtingSorterIdAtom,sorterInputValueAtom, isComittingSorterAtom,
+    selectedSortersAtom
 } from '../atoms/atoms';
 
 
@@ -77,12 +79,12 @@ import {
     handleElementOkAction,
     handleElementNameSaveAction,
     setCurrentCategoryAction, setSelectedElementAction,
-    openContextMenuAction,  toggleSelectElementAction, handleBulkDeleteElementsAction
+    openContextMenuAction,  toggleSelectElementAction, handleBulkDeleteElementsAction,
 
 } from '../actions/elementAction';
 
 import {elementsDataAction} from "../actions/elementsDataAction";
-import {addSorterAction, deleteSorterAction, fetchSortersByUserAction} from '../actions/sorterAction';
+import {addSorterAction, deleteSorterAction, fetchSortersByUserAction, updateSorterNameAction, deleteMultipleSortersAction} from '../actions/sorterAction';
 
 const { Title } = Typography;
 const SorterPage = () => {
@@ -148,11 +150,17 @@ const SorterPage = () => {
     const[, setFetchSortersByUser] = useAtom(fetchSortersByUserAction);
 
 
+    const [deleteMultipleSorters, setDeleteMultipleSorters] = useAtom(deleteMultipleSortersAction);
+    const [selectedSorters, setSelectedSorters] = useAtom(selectedSortersAtom);
+    const [editingSorterId, setEditingSorterId] = useAtom(edtingSorterIdAtom);
+    const [inputValue, setInputValue] = useAtom(editedSorterNameAtom);
+    const [, updateSorterName] = useAtom(updateSorterNameAction)
     const sorterRef = useRef(null);
     const [arrowHeight, setArrowHeight] = useState(0);
-
+    const setUpdateSorterName = useSetAtom(updateSorterNameAction);
     const navigate = useNavigate();
     const { confirm } = Modal;
+
     const settings = {
         dots: true,
         infinite: true, // 무한 루프
@@ -421,6 +429,11 @@ const SorterPage = () => {
     const isRightRed =
         nextCategoryIndex === firstCategoryIndex || nextCategoryIndex === lastCategoryIndex;
 
+
+
+
+
+
 ////////////////////////////////////////////////////////////////////////////////
 
     useEffect(() => {
@@ -455,15 +468,56 @@ const SorterPage = () => {
 
 
 
-    const [sectionHeight, setSectionHeight] = useState(0);
+
     const sectionRef = useRef(null);
     const addSorter = () =>{
         setAddSorter();
     }
     const deleteSorter = (sorterId) =>{
-
         setDeleteSorter(sorterId);
     }
+    const multiDeleteSorters = () => {
+        if (selectedSorters.length === 0) {
+            message.warning("삭제할 정렬자를 선택해주세요.");
+            return;
+        }
+        console.log("선택자" + selectedSorters);
+        // 삭제 요청
+        setDeleteMultipleSorters(selectedSorters);
+        // 선택 초기화 (선택된 상태를 관리하는 useState가 있다고 가정)
+        setSelectedSorters([]);
+    };
+
+
+    const handleSorterNameDoubleClick = (id, name) => {
+
+        setEditingSorterId(id);  // 편집할 ID 설정
+        setInputValue(name);      // 입력 필드에 기존 이름 설정
+    };
+    const handleSaveSorterName = async (id) => {
+        const value = inputValue ?? '';
+        if (value.trim()) {
+            try {
+                await updateSorterName({ sorter_id: id, newName: value });
+                console.log('Sorter name updated successfully');
+            } catch (error) {
+                console.error('Error updating sorter name:', error);
+            }
+        }
+        setEditingSorterId(null);  // 편집 모드 종료
+    };
+
+    const handleSorterClick = (sorter_id) => {
+        setSelectedSorters((prevSelected) => {
+            const newSelected = prevSelected.includes(sorter_id)
+                ? prevSelected.filter((id) => id !== sorter_id) // 선택 해제
+                : [...prevSelected, sorter_id]; // 선택
+
+            console.log(newSelected); // 상태 변경 후 상태 출력
+            return newSelected;
+        });
+    };
+
 
 
 
@@ -525,9 +579,8 @@ const SorterPage = () => {
                     <div className='sorter-header'>
 
 
-
                         {/* + 추가 버튼 */}
-                        <Tooltip title="카테고리를 추가" overlayClassName="custom-tooltip">
+                        <Tooltip title="카테고리 추가" overlayClassName="custom-tooltip">
                             <button className="category-btn" onClick={() => setAddCategoryModalVisible(true)}>
                                 +
                             </button>
@@ -560,7 +613,7 @@ const SorterPage = () => {
                         </Popover>
 
                         {/* - 삭제 버튼 */}
-                        <Tooltip title="카테고리를 삭제" overlayClassName="custom-tooltip" placement="top" arrow={true}>
+                        <Tooltip title="카테고리 삭제" overlayClassName="custom-tooltip" placement="top" arrow={true}>
                             <button className="category-btn" onClick={handleDeleteCategory}>-</button>
                         </Tooltip>
 
@@ -611,27 +664,7 @@ const SorterPage = () => {
                         </div>
                     </div>
                     <ContextMenu />
-                    <div className = "element-btn-section">
-                        <Tooltip title="카테고리 요소 추가"
-                                 overlayClassName="custom-tooltip"
-                                 placement="bottom"
-                                 arrow={true}>
-                            <button type="text" className="element-btn" onClick={showAddElmementModal}>+</button>
-                        </Tooltip>
 
-                        <Tooltip title="카테고리 요소 삭제"
-                                 overlayClassName="custom-tooltip"
-                                 placement="bottom"
-                                 arrow={true}>
-                            <button
-                                type="text"
-                                className="element-btn-delete"
-                                onClick={handleDeleteSelectedElements}
-                            >
-                                <Trash className = "trash" size={20} />
-                            </button>
-                        </Tooltip>
-                    </div>
 
                     <Modal
                         title="카테고리 추가"
@@ -763,12 +796,32 @@ const SorterPage = () => {
                 )}
 
 
-
-
-
-
-
             </div>
+
+
+
+            <div className = "element-btn-section">
+                <Tooltip title="카테고리 요소 추가"
+                         overlayClassName="custom-tooltip"
+                         placement="bottom"
+                         arrow={true}>
+                    <button type="text" className="element-btn" onClick={showAddElmementModal}>+</button>
+                </Tooltip>
+
+                <Tooltip title="카테고리 요소 삭제"
+                         overlayClassName="custom-tooltip"
+                         placement="bottom"
+                         arrow={true}>
+                    <button
+                        type="text"
+                        className="element-btn-delete"
+                        onClick={handleDeleteSelectedElements}
+                    >
+                        <Trash className = "trash" size={20} />
+                    </button>
+                </Tooltip>
+            </div>
+
 
 
 
@@ -777,16 +830,55 @@ const SorterPage = () => {
             <div className="sorter-sort-section">
 
 
-                <button type="text" className="sorter-btn" onClick={addSorter}>
-                    + Sorter 추가
-                </button>
+                <Button
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={addSorter}
+                    className="sorter-btn"
+                >
+                    Sorter 추가
+                </Button>
+
+
 
                 <div className="sorter-scroll-wrapper">
+
                     <Slider {...settings}>
-                        {sorters.map((sorter, index) => (
-                            <div key={index}>
-                                <div className="sorter-wrapper">
-                                    <div className="sorter-title -section">{sorter.sorter_name}</div>
+                        {sorters.map((sorter) => (
+                            <div key={sorter.sorter_id}>
+                                <div
+                                    onClick={() => handleSorterClick(sorter.sorter_id)}
+                                    className={
+                                        `sorter-wrapper ${selectedSorters.includes(sorter.sorter_id) ? 'selected-sorter' : ''}`
+                                    }
+                                >
+                                    <div
+                                        className="sorter-title -section"
+                                        onDoubleClick={() => handleSorterNameDoubleClick(sorter.sorter_id, sorter.sorter_name)}
+                                    >
+                                        {editingSorterId === sorter.sorter_id ? (
+                                            <input
+                                                autoFocus
+                                                value={inputValue ?? ''}
+                                                onChange={(e) => setInputValue(e.target.value)}
+                                                onBlur={() => {
+                                                    if (inputValue !== sorter.sorter_name) {
+                                                        handleSaveSorterName(sorter.sorter_id);
+                                                    }
+                                                }}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        handleSaveSorterName(sorter.sorter_id);
+                                                    } else if (e.key === 'Escape') {
+                                                        setEditingSorterId(null);
+                                                    }
+                                                }}
+                                            />
+                                        ) : (
+                                            sorter.sorter_name
+                                        )}
+                                    </div>
+
                                     <div className="sorter-box">
                                         <button
                                             className="delete-btn"
@@ -799,7 +891,15 @@ const SorterPage = () => {
                             </div>
                         ))}
                     </Slider>
+
+                    {selectedSorters.length > 0 && (
+                        <button className="delete-selected-btn" onClick={multiDeleteSorters}>
+                           전체 삭제
+                        </button>
+                    )}
                 </div>
+
+
             </div>
 
 

@@ -55,4 +55,15 @@ public class SorterService {
 
         return inserted;
     }
+
+    public Sorter updateSorterName(int sorterId, String sorterName) {
+        sorterMapper.updateSorterName(sorterId, sorterName);
+        return sorterMapper.getSorterById(sorterId);
+    }
+
+
+    public void deleteMultipleSorters(List<Integer> sorterIds) {
+        sorterMapper.deleteMultipleSorters(sorterIds);
+    }
+
 }
