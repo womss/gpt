@@ -48,6 +48,11 @@ public class SorterController {
         Sorter updatedSorter = sorterService.updateSorterName(sorterId, sorterName);
         return ResponseEntity.ok(updatedSorter);
     }
+    @PostMapping("/delete/multiple")
+    public ResponseEntity<String> deleteMultipleSorters(@RequestBody List<Integer> sorterIds) {
+        sorterService.deleteMultipleSorters(sorterIds);
+        return ResponseEntity.ok("다중 삭제 완료");
+    }
 
 
 

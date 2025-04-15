@@ -62,5 +62,8 @@ public class SorterService {
     }
 
 
+    public void deleteMultipleSorters(List<Integer> sorterIds) {
+        sorterMapper.deleteMultipleSorters(sorterIds);
+    }
 
 }

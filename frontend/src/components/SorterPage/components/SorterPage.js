@@ -79,12 +79,12 @@ import {
     handleElementOkAction,
     handleElementNameSaveAction,
     setCurrentCategoryAction, setSelectedElementAction,
-    openContextMenuAction,  toggleSelectElementAction, handleBulkDeleteElementsAction
+    openContextMenuAction,  toggleSelectElementAction, handleBulkDeleteElementsAction,
 
 } from '../actions/elementAction';
 
 import {elementsDataAction} from "../actions/elementsDataAction";
-import {addSorterAction, deleteSorterAction, fetchSortersByUserAction, updateSorterNameAction} from '../actions/sorterAction';
+import {addSorterAction, deleteSorterAction, fetchSortersByUserAction, updateSorterNameAction, deleteMultipleSortersAction} from '../actions/sorterAction';
 
 const { Title } = Typography;
 const SorterPage = () => {
@@ -149,6 +149,8 @@ const SorterPage = () => {
     const [, setDeleteSorter] = useAtom(deleteSorterAction);
     const[, setFetchSortersByUser] = useAtom(fetchSortersByUserAction);
 
+
+    const [deleteMultipleSorters, setDeleteMultipleSorters] = useAtom(deleteMultipleSortersAction);
     const [selectedSorters, setSelectedSorters] = useAtom(selectedSortersAtom);
     const [editingSorterId, setEditingSorterId] = useAtom(edtingSorterIdAtom);
     const [inputValue, setInputValue] = useAtom(editedSorterNameAtom);
@@ -466,15 +468,26 @@ const SorterPage = () => {
 
 
 
-    const [sectionHeight, setSectionHeight] = useState(0);
+
     const sectionRef = useRef(null);
     const addSorter = () =>{
         setAddSorter();
     }
     const deleteSorter = (sorterId) =>{
-
         setDeleteSorter(sorterId);
     }
+    const multiDeleteSorters = () => {
+        if (selectedSorters.length === 0) {
+            message.warning("삭제할 정렬자를 선택해주세요.");
+            return;
+        }
+        console.log("선택자" + selectedSorters);
+        // 삭제 요청
+        setDeleteMultipleSorters(selectedSorters);
+        // 선택 초기화 (선택된 상태를 관리하는 useState가 있다고 가정)
+        setSelectedSorters([]);
+    };
+
 
     const handleSorterNameDoubleClick = (id, name) => {
 
@@ -505,11 +518,6 @@ const SorterPage = () => {
         });
     };
 
-    const handleDeleteSelectedSorters = () => {
-        // 선택된 sorter들 삭제 로직
-        deleteSorter(selectedSorters);
-        setSelectedSorters([]); // 삭제 후 선택된 sorter들 초기화
-    };
 
 
 
@@ -834,14 +842,16 @@ const SorterPage = () => {
 
 
                 <div className="sorter-scroll-wrapper">
+
                     <Slider {...settings}>
                         {sorters.map((sorter) => (
-                            <div
-                                key={sorter.sorter_id}
-                                onClick={() => handleSorterClick(sorter.sorter_id)} // sorter 클릭 시 선택/해제
-                                className={selectedSorters.includes(sorter.sorter_id) ? 'selected-sorter' : ''}
-                            >
-                                <div className="sorter-wrapper">
+                            <div key={sorter.sorter_id}>
+                                <div
+                                    onClick={() => handleSorterClick(sorter.sorter_id)}
+                                    className={
+                                        `sorter-wrapper ${selectedSorters.includes(sorter.sorter_id) ? 'selected-sorter' : ''}`
+                                    }
+                                >
                                     <div
                                         className="sorter-title -section"
                                         onDoubleClick={() => handleSorterNameDoubleClick(sorter.sorter_id, sorter.sorter_name)}
@@ -882,13 +892,14 @@ const SorterPage = () => {
                         ))}
                     </Slider>
 
-                    {/* 삭제 버튼: 선택된 sorter들을 삭제 */}
                     {selectedSorters.length > 0 && (
-                        <button className="delete-selected-btn" onClick={handleDeleteSelectedSorters}>
-                            Delete Selected Sorters
+                        <button className="delete-selected-btn" onClick={multiDeleteSorters}>
+                           전체 삭제
                         </button>
                     )}
                 </div>
+
+
             </div>
 
 

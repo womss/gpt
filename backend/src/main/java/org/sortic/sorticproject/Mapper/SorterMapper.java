@@ -40,5 +40,13 @@ public interface SorterMapper {
 
     @Update("UPDATE Sorter SET sorter_name = #{sorter_name} WHERE sorter_id = #{sorter_id}")
     void updateSorterName(@Param("sorter_id") int sorter_id, @Param("sorter_name") String sorter_name);
-
+    @Delete({
+            "<script>",
+            "DELETE FROM Sorter WHERE sorter_id IN",
+            "<foreach item='id' collection='sorterIds' open='(' separator=',' close=')'>",
+            "#{id}",
+            "</foreach>",
+            "</script>"
+    })
+    void deleteMultipleSorters(@Param("sorterIds") List<Integer> sorterIds);
 }
