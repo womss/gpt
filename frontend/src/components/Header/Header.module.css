@@ -1,16 +1,18 @@
 :root {
-    --header-bg: #ffffffcc;
-    --menu-color: #333;
-    --hover-color: #1890ff;
-    --text-color: #000;
+  --header-bg: #ffffffcc;
+  --menu-color: #333;
+  --hover-color: #1890ff;
+  --text-color: #000;
 }
 
-[data-theme='dark'] {
-    --header-bg: #1f1f1fcc;
-    --menu-color: #ddd;
-    --hover-color: #40a9ff;
-    --text-color: #fff;
+/* ✅ 반드시 전역 셀렉터로 지정 */
+:global(.dark) {
+  --header-bg: #1f1f1fcc;
+  --menu-color: #ddd;
+  --hover-color: #40a9ff;
+  --text-color: #fff;
 }
+
 
 .header-container {
     display: flex;
